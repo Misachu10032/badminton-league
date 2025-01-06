@@ -1,30 +1,112 @@
-// components/Dashboard.js
+"use client";
+
+import { useEffect, useState } from "react";
+import { formatDate } from "../../utils/formatDate";
+
 export default function Dashboard({ user }) {
-    if (!user) {
-        return <div>Loading user data...</div>;
+  const [matches, setMatches] = useState({ pending: [], confirmed: [] });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user || !user.requests) {
+      console.log("User or user.requests is null");
+      return; // Prevents fetch if user or user.requests is not available
     }
 
-    return (
-        <div className="max-w-6xl mx-auto mt-8 px-4">
-            <div className="bg-white shadow-md rounded-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to the Dashboard</h2>
-                <p className="text-gray-600">
-                    This is a protected page. Only authenticated users can access it.
+    const fetchMatches = async () => {
+      console.log(user);
+      console.log(user.requests);
+      console.log(user.requests.pending);
+
+      try {
+        const res = await fetch("/api/get-matches", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            pendingIds: user.requests.pending,
+            confirmedIds: user.requests.confirmed,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          setMatches({
+            pending: data.pendingMatches,
+            confirmed: data.confirmedMatches,
+          });
+        } else {
+          console.error("Failed to fetch matches");
+        }
+      } catch (error) {
+        console.error("Error fetching matches:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMatches();
+  }, [user]);
+
+  if (loading) return <div>Loading matches...</div>;
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+
+      {/* Pending Matches */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Pending Matches</h2>
+        {matches.pending.length === 0 ? (
+          <p>No pending matches</p>
+        ) : (
+          <div className="space-y-4">
+            {matches.pending.map((match) => (
+              <div
+                key={match._id}
+                className="p-4 border rounded-lg bg-gray-50 shadow flex items-center justify-between"
+              >
+                <p className="flex-1 text-sm">
+                  {formatDate(match.createdAt)} {/* Date */}
                 </p>
-                {/* Display the requests */}
-                <div>
-                    <h3 className="font-semibold">Your Requests</h3>
-                    <ul>
-                        {user.requests?.length ? (
-                            user.requests.map((request, index) => (
-                                <li key={index} className="mb-2">{request}</li>
-                            ))
-                        ) : (
-                            <p>No requests available</p>
-                        )}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    );
+                <p className="flex-1 text-sm">
+                  {match.team1.map((p) => p.name).join(", ")} vs {match.team2.map((p) => p.name).join(", ")} {/* Teams */}
+                </p>
+                <p className="flex-1 text-sm">
+                  {match.scores.map((s) => `${s.team1}-${s.team2}`).join(" ")} {/* Scores */}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Confirmed Matches */}
+      <section>
+        <h2 className="text-xl font-semibold mb-2">Confirmed Matches</h2>
+        {matches.confirmed.length === 0 ? (
+          <p>No confirmed matches</p>
+        ) : (
+          <div className="space-y-4">
+            {matches.confirmed.map((match) => (
+              <div
+                key={match._id}
+                className="p-4 border rounded-lg bg-gray-50 shadow flex items-center justify-between"
+              >
+                <p className="flex-1 text-sm">
+                  {formatDate(match.createdAt)} {/* Date */}
+                </p>
+                <p className="flex-1 text-sm">
+                  {match.team1.map((p) => p.name).join(", ")} vs {match.team2.map((p) => p.name).join(", ")} {/* Teams */}
+                </p>
+                <p className="flex-1 text-sm">
+                  {match.scores.map((s) => `${s.team1}-${s.team2}`).join(" ")} {/* Scores */}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
 }
