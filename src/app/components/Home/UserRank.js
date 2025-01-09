@@ -1,6 +1,7 @@
 import { getRank } from "../../utils/getRanks"; // Ensure this path is correct
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { useState } from 'react';
+import PlayerRankModal from "./AllPlayerRankModal";
 // import PlayerRankModal from './PlayerRankModal'; // Import the modal component
 
 const UserRank = ({ score, players }) => {
@@ -23,7 +24,7 @@ const UserRank = ({ score, players }) => {
         <PlayerRankModal
           isOpen={isRankModalOpen}
           onClose={() => setIsRankModalOpen(false)}
-          players={players}
+
         />
       )}
     </div>
