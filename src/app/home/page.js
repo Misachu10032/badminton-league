@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Dashboard from "../components/Home/DashBoard";
 import RecordMatchModal from "../components/Home/RecordMatchModal"; // Import the modal component
+import UserRank from "../components/Home/RankDisplay";
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
@@ -37,6 +38,15 @@ export default function HomePage() {
     fetchUserData();
   }, []);
 
+  const handleLogout = () => {
+    // Remove cookies
+    Cookies.remove("userID");
+    Cookies.remove("token");
+    alert("You have been logged out!");
+    // Redirect to login page or refresh the page
+    window.location.href = "/login";
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -45,14 +55,19 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="bg-white shadow-lg">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-semibold">Dashboard</h1>
-          </div>
-        </div>
-      </nav>
+  <div className="flex justify-end px-4">
+    <button
+      onClick={handleLogout}
+      className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700"
+    >
+      Logout
+    </button>
+  </div>
+</nav>
+
 
       {/* Pass the user data to the Dashboard component */}
+      <UserRank score={user?.score} />
       <Dashboard user={user} />
 
       {/* Open Modal Button */}
@@ -61,7 +76,7 @@ export default function HomePage() {
           onClick={() => setIsModalOpen(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700"
         >
-          Open Modal
+          New Request
         </button>
       </div>
 
