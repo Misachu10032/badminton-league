@@ -68,7 +68,12 @@ export async function POST(req) {
           { status: 200 }
         );
       }
-
+      await db.collection("matches").updateOne(
+        { _id: matchObjectId },
+        {// Adds userId to the 'confirmedBy' array if not already present
+          $set: { status: "Confirmed" } // Updates the status field to "Confirmed"
+        }
+      );
       // Determine the winners and update scores
       const { winners, losers } = findWinners(match);
       await addScoreToUsers(winners, 50);

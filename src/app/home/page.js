@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Dashboard from "../components/Home/DashBoard";
 import RecordMatchModal from "../components/Home/RecordMatchModal"; // Import the modal component
-import UserRank from "../components/Home/RankDisplay";
+import UserRank from "../components/Home/UserRank"
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
@@ -54,31 +54,33 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
-      <nav className="bg-white shadow-lg">
-  <div className="flex justify-end px-4">
-    <button
-      onClick={handleLogout}
-      className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700"
-    >
-      Logout
-    </button>
-  </div>
-</nav>
+      <nav className="bg-white shadow-lg rounded-lg mb-6 p-4">
+        <div className="flex justify-between items-center">
+          <h1 className="text-xl font-bold text-gray-800">Badminton League</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
 
 
       {/* Pass the user data to the Dashboard component */}
       <UserRank score={user?.score} />
+      <div className="mt-10 ml-4">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 text-white p-4 rounded-lg shadow-lg hover:bg-blue-700"
+        >
+          + New Request
+        </button>
+      </div>
+
       <Dashboard user={user} />
 
       {/* Open Modal Button */}
-      <div className="fixed bottom-10 right-10">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700"
-        >
-          New Request
-        </button>
-      </div>
 
       {/* Popup Modal */}
       {isModalOpen && (

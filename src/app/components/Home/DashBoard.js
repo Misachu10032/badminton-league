@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatDate } from "../../utils/formatDate";
+import ConfirmModal from './ConfirmModal';
 
 const MATCHES_PER_PAGE = 10; // Matches per page
 
@@ -12,6 +13,8 @@ export default function Dashboard({ user }) {
   const [isConfirmedCollapsed, setIsConfirmedCollapsed] = useState(true);
   const [pendingPage, setPendingPage] = useState(1);
   const [confirmedPage, setConfirmedPage] = useState(1);
+  const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+  const [matchToDecline, setMatchToDecline] = useState(null);
 
   useEffect(() => {
     if (!user || !user.requests) {
@@ -77,6 +80,36 @@ export default function Dashboard({ user }) {
     }
   };
 
+  const onDecline = async (match) => {
+    setMatchToDecline(match);
+    setIsDeclineModalOpen(true);
+  };
+
+  const handleConfirmDecline = async () => {
+    try {
+      const res = await fetch(`/api/decline-match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ match: matchToDecline }),
+      });
+
+      if (res.ok) {
+        alert("Match request declined successfully!");
+        // Refresh matches or update state as needed
+      } else {
+        const error = await res.json();
+        console.error("Error declining match:", error);
+        alert(error.message || "Failed to decline match");
+      }
+    } catch (error) {
+      console.error("Error declining match:", error);
+      alert("Failed to decline match. Please try again.");
+    } finally {
+      setIsDeclineModalOpen(false);
+      setMatchToDecline(null);
+    }
+  };
+
   const paginateMatches = (matches, page) => {
     const startIndex = (page - 1) * MATCHES_PER_PAGE;
     return matches.slice(startIndex, startIndex + MATCHES_PER_PAGE);
@@ -91,7 +124,7 @@ export default function Dashboard({ user }) {
   if (loading) return <div>Loading matches...</div>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 mt-2">
       {/* Pending Matches */}
       <section className="mb-8">
         <div className="flex justify-between items-center mb-2">
@@ -127,11 +160,14 @@ export default function Dashboard({ user }) {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => onConfirm(match._id)}
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200"
                       >
                         Confirm
                       </button>
-                      <button className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600">
+                      <button
+                        onClick={() => onDecline(match)}
+                        className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition duration-200"
+                      >
                         X
                       </button>
                     </div>
@@ -268,6 +304,14 @@ export default function Dashboard({ user }) {
           </>
         )}
       </section>
+      {/* Confirmation Modal */}
+      {isDeclineModalOpen && (
+        <ConfirmModal
+          isOpen={isDeclineModalOpen}
+          onClose={() => setIsDeclineModalOpen(false)}
+          onConfirm={handleConfirmDecline}
+        />
+      )}
     </div>
   );
 }

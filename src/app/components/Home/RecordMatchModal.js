@@ -138,15 +138,6 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
       ...team1.map(player => player.userId),
       ...team2.map(player => player.userId)
     ];
-    const a = JSON.stringify({
-      isDoubleGame,
-      currentUser: currentUser._id,
-      team1,
-      team2,
-      scores: formData.scores,
-      userIds
-    })
-    console.log(a)
 
     try {
       const response = await fetch("/api/record-match", {
@@ -155,7 +146,6 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
- 
           isDoubleGame,
           currentUser: currentUser._id,
           team1,
@@ -181,11 +171,14 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
       onRequestClose={onClose}
       style={{
         content: {
-          width: "800px",
-          height: "800px",
+          width: "90%", // Use percentage for responsive width
+          maxWidth: "800px", // Set a max width for larger screens
+          height: "90%", // Use percentage for responsive height
+          maxHeight: "800px", // Set a max height for larger screens
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
+          padding: "20px", // Add padding for better spacing
         },
       }}
       ariaHideApp={false}
@@ -221,7 +214,7 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="flex flex-wrap gap-12">
+        <div className="flex flex-wrap gap-6">
           {formData.teams.map((team, teamIndex) => (
             <div
               key={teamIndex}
@@ -246,7 +239,7 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
                           setShowUserSelection(true);
                           setSelectedField({ teamIndex, playerIndex });
                         }}
-                        className="w-32 h-12 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-blue-50 hover:border-blue-400  text-lg font-medium flex items-center justify-center"
+                        className="w-32 h-12 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-blue-50 hover:border-blue-400 text-lg font-medium flex items-center justify-center"
                       >
                         {player.name || ""}
                       </div>
@@ -281,30 +274,27 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
                       onChange={(e) => handleScoreChange(e, index, "team1")}
                       className="w-12 h-6 border-gray-200 rounded-lg text-center"
                     />
-                    <span className="text-3xl font-medium text-gray-700">
-                      :
-                    </span>
+                    <span className="text-3xl font-medium text-gray-700">:</span>
                     <ScoreInput
                       value={score.team2}
                       onChange={(e) => handleScoreChange(e, index, "team2")}
                       className="w-12 h-6 border-gray-200 text-center"
                     />
                   </div>
-       
                 </div>
               ))}
             </div>
           </div>
           {formErrors[`ScoresRequired`] && (
-  <FormHelperText error className="mt-4">
-    {formErrors[`ScoresRequired`]}
-  </FormHelperText>
-)}
-{formErrors[`ScoresInvalid`] && (
-  <FormHelperText error className="mt-4">
-    {formErrors[`ScoresInvalid`]}
-  </FormHelperText>
-)}
+            <FormHelperText error className="mt-4">
+              {formErrors[`ScoresRequired`]}
+            </FormHelperText>
+          )}
+          {formErrors[`ScoresInvalid`] && (
+            <FormHelperText error className="mt-4">
+              {formErrors[`ScoresInvalid`]}
+            </FormHelperText>
+          )}
           <div className="flex space-x-4 mt-6">
             {formData.scores.length < 5 && (
               <Button
