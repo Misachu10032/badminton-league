@@ -140,31 +140,33 @@ export default function Dashboard({ user }) {
             {pendingMatchesToShow.length === 0 ? (
               <p>No pending matches</p>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-4 sm:space-y-2">
                 {pendingMatchesToShow.map((match) => (
                   <div
                     key={match._id}
-                    className="p-4 border rounded-lg bg-gray-50 shadow flex items-center justify-between"
+                    className="border rounded-lg bg-gray-50 shadow flex flex-col sm:flex-row items-center justify-between p-1 sm:p-3 text-sm sm:text-base"
                   >
-                    <p>{formatDate(match.createdAt)}</p>
-                    <p>
+                    <p className="w-full sm:w-auto mb-1 sm:mb-0">
+                      {formatDate(match.createdAt)}
+                    </p>
+                    <p className="w-full sm:w-auto mb-1 sm:mb-0">
                       {match.team1.map((p) => p.name).join(", ")} vs{" "}
                       {match.team2.map((p) => p.name).join(", ")}
                     </p>
-                    <p>
+                    <p className="w-full sm:w-auto mb-1 sm:mb-0">
                       {match.scores
                         .map((s) => `${s.team1}-${s.team2}`)
                         .join(" ")}
                     </p>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 sm:space-x-4 w-full sm:w-auto mt-2 sm:mt-0">
                       <button
                         onClick={() => onConfirm(match._id)}
-                        className={`px-4 py-2 rounded-lg shadow transition duration-200 ${
+                        className={`p-1 sm:px-4 sm:py-2 rounded-lg shadow transition duration-200 w-full sm:w-auto ${
                           user.requests.confirmed.includes(match._id)
                             ? "bg-gray-200 text-gray-700 cursor-not-allowed"
                             : "bg-blue-600 text-white hover:bg-blue-700"
                         }`}
-                        disabled={user.requests.confirmed.includes(match._id)} // Disable if match._id is in confirmed
+                        disabled={user.requests.confirmed.includes(match._id)}
                       >
                         {user.requests.confirmed.includes(match._id)
                           ? "Confirmed"
@@ -173,21 +175,22 @@ export default function Dashboard({ user }) {
 
                       <button
                         onClick={() => onDecline(match)}
-                        className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition duration-200"
+                        className="bg-red-600 text-white p-1 sm:px-4 sm:py-2 rounded-lg shadow hover:bg-red-700 transition duration-200 w-full sm:w-auto"
                       >
                         X
                       </button>
                     </div>
                   </div>
                 ))}
+
                 {/* Pagination */}
-                <div className="flex justify-between mt-4">
+                <div className="flex flex-col sm:flex-row justify-between mt-4">
                   <button
                     onClick={() =>
                       setPendingPage((prev) => Math.max(prev - 1, 1))
                     }
                     disabled={pendingPage === 1}
-                    className={`px-4 py-2 rounded-lg shadow ${
+                    className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow mb-2 sm:mb-0 ${
                       pendingPage === 1
                         ? "bg-gray-300"
                         : "bg-blue-500 text-white hover:bg-blue-600"
@@ -195,7 +198,7 @@ export default function Dashboard({ user }) {
                   >
                     Previous
                   </button>
-                  <p>
+                  <p className="mb-2 sm:mb-0 text-center sm:text-left">
                     Page {pendingPage} of{" "}
                     {Math.ceil(matches.pending.length / MATCHES_PER_PAGE)}
                   </p>
@@ -212,7 +215,7 @@ export default function Dashboard({ user }) {
                       pendingPage ===
                       Math.ceil(matches.pending.length / MATCHES_PER_PAGE)
                     }
-                    className={`px-4 py-2 rounded-lg shadow ${
+                    className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow ${
                       pendingPage ===
                       Math.ceil(matches.pending.length / MATCHES_PER_PAGE)
                         ? "bg-gray-300"
@@ -241,75 +244,58 @@ export default function Dashboard({ user }) {
           </button>
         </div>
         {!isConfirmedCollapsed && (
-          <>
-            {confirmedMatchesToShow.length === 0 ? (
-              <p>No confirmed matches</p>
-            ) : (
-              <div className="space-y-4">
-                {confirmedMatchesToShow.map((match) => (
-                  <div
-                    key={match._id}
-                    className="p-4 border rounded-lg bg-gray-50 shadow flex items-center justify-between"
-                  >
-                    <p>{formatDate(match.createdAt)}</p>
-                    <p>
-                      {match.team1.map((p) => p.name).join(", ")} vs{" "}
-                      {match.team2.map((p) => p.name).join(", ")}
-                    </p>
-                    <p>
-                      {match.scores
-                        .map((s) => `${s.team1}-${s.team2}`)
-                        .join(" ")}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-            {/* Pagination */}
-            {/* Pagination */}
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={() =>
-                  setConfirmedPage((prev) => Math.max(prev - 1, 1))
-                }
-                disabled={confirmedPage === 1}
-                className={`px-4 py-2 rounded-lg shadow ${
-                  confirmedPage === 1
-                    ? "bg-gray-300"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
-              >
-                Previous
-              </button>
-              <p>
-                Page {confirmedPage} of{" "}
-                {Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)}
-              </p>
-              <button
-                onClick={() =>
-                  setConfirmedPage((prev) =>
-                    prev <
-                    Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
-                      ? prev + 1
-                      : prev
-                  )
-                }
-                disabled={
-                  confirmedPage ===
-                  Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
-                }
-                className={`px-4 py-2 rounded-lg shadow ${
-                  confirmedPage ===
-                  Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
-                    ? "bg-gray-300"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                }`}
-              >
-                Next
-              </button>
-            </div>
-          </>
+  <>
+    {confirmedMatchesToShow.length === 0 ? (
+      <p className="text-center">No confirmed matches</p>
+    ) : (
+      <div className="space-y-4">
+        {confirmedMatchesToShow.map((match) => (
+          <div
+            key={match._id}
+            className="p-2 sm:p-4 border rounded-lg bg-gray-50 shadow flex flex-col sm:flex-row justify-between"
+          >
+            <p className="mb-2 sm:mb-0 sm:mr-2">{formatDate(match.createdAt)}</p>
+            <p className="mb-2 sm:mb-0 sm:mr-2">
+              {match.team1.map((p) => p.name).join(", ")} vs{" "}
+              {match.team2.map((p) => p.name).join(", ")}
+            </p>
+            <p className="text-sm sm:text-base">
+              {match.scores.map((s) => `${s.team1}-${s.team2}`).join(" ")}
+            </p>
+          </div>
+        ))}
+      </div>
+    )}
+    {/* Pagination */}
+    <div className="flex flex-col sm:flex-row justify-between mt-4">
+      <button
+        onClick={() => setConfirmedPage((prev) => Math.max(prev - 1, 1))}
+        disabled={confirmedPage === 1}
+        className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow mb-2 sm:mb-0 ${
+          confirmedPage === 1
+            ? "bg-gray-300"
+            : "bg-blue-500 text-white hover:bg-blue-600"
+        }`}
+      >
+        Previous
+      </button>
+      <p className="text-center sm:text-left mb-2 sm:mb-0">Page {confirmedPage} of {Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)}</p>
+      <button
+        onClick={() => setConfirmedPage((prev) => 
+          prev < Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE) ? prev + 1 : prev
         )}
+        disabled={confirmedPage === Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)}
+        className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow ${
+          confirmedPage === Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
+            ? "bg-gray-300"
+            : "bg-blue-500 text-white hover:bg-blue-600"
+        }`}
+      >
+        Next
+      </button>
+    </div>
+  </>
+)}
       </section>
       {/* Confirmation Modal */}
       {isDeclineModalOpen && (
