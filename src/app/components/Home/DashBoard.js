@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatDate } from "../../utils/formatDate";
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from "./ConfirmModal";
 
 const MATCHES_PER_PAGE = 10; // Matches per page
 
@@ -28,16 +28,15 @@ export default function Dashboard({ user }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            pendingIds: user.requests.pending,
-            confirmedIds: user.requests.confirmed,
+            matchesIds: [...user.requests.confirmed, ...user.requests.pending],
           }),
         });
 
         if (res.ok) {
           const data = await res.json();
           setMatches({
-            pending: data.pendingMatches,
-            confirmed: data.confirmedMatches,
+            pending: data.matches.filter((m) => m.status === "Pending"),
+            confirmed: data.matches.filter((m) => m.status === "Confirmed"),
           });
         } else {
           console.error("Failed to fetch matches");
@@ -160,10 +159,18 @@ export default function Dashboard({ user }) {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => onConfirm(match._id)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-200"
+                        className={`px-4 py-2 rounded-lg shadow transition duration-200 ${
+                          user.requests.confirmed.includes(match._id)
+                            ? "bg-gray-200 text-gray-700 cursor-not-allowed"
+                            : "bg-blue-600 text-white hover:bg-blue-700"
+                        }`}
+                        disabled={user.requests.confirmed.includes(match._id)} // Disable if match._id is in confirmed
                       >
-                        Confirm
+                        {user.requests.confirmed.includes(match._id)
+                          ? "Confirmed"
+                          : "Confirm"}
                       </button>
+
                       <button
                         onClick={() => onDecline(match)}
                         className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition duration-200"

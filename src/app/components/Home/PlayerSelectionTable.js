@@ -1,74 +1,76 @@
-import { useState } from 'react';
-import { Box, Avatar, TextField } from '@mui/material';
+import { useState, useMemo } from 'react';
+import { Box, Avatar, TextField, useMediaQuery, useTheme } from '@mui/material';
 
 export default function PlayerSelectionTable({ users, onClose, onSelect }) {
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const filteredUsers = useMemo(() => 
+    users.filter(user => 
+      user.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [users, searchQuery]);
+
+  const gridTemplate = isMobile ? 'repeat(1, 1fr)' : 'repeat(5, 1fr)';
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 sm:p-8">
-      <div className="bg-white p-6 sm:p-10 w-full max-w-[1000px] max-h-[85vh] overflow-y-auto rounded-xl shadow-xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-8">
+      <div className={`bg-white ${isMobile ? 'p-4' : 'p-10'} w-full max-w-[1000px] max-h-[85vh] overflow-y-auto rounded-xl shadow-xl`}>
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 sm:mb-10 pb-6 border-b-2 border-gray-100">
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-800">Select Player</h3>
+        <div className="flex justify-between items-center mb-4 pb-4 border-b-2 border-gray-100">
+          <h3 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-gray-800`}>Select Player</h3>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl font-light transition duration-200"
+            className="text-gray-500 hover:text-gray-700 text-2xl font-light"
           >
             ×
           </button>
         </div>
         
         {/* Search Box */}
-        <div className="mb-8 sm:mb-10">
+        <div className="mb-4">
           <TextField
             fullWidth
             variant="outlined"
-            size="large"
+            size={isMobile ? "small" : "large"}
             placeholder="Search players..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             sx={{
               '& .MuiOutlinedInput-root': {
-                height: '56px',
-                fontSize: '1.1rem'
+                height: isMobile ? '40px' : '56px',
+                fontSize: isMobile ? '0.9rem' : '1.1rem'
               }
             }}
           />
         </div>
 
         {/* Player Grid */}
-        <div className="border-2 border-gray-200 rounded-xl p-6 sm:p-8 bg-gray-50">
+        <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
           <Box 
             display="grid" 
-            gridTemplateColumns="repeat(1, 1fr)" 
-            sm={{ gridTemplateColumns: "repeat(2, 1fr)" }} 
-            md={{ gridTemplateColumns: "repeat(3, 1fr)" }} 
-            lg={{ gridTemplateColumns: "repeat(5, 1fr)" }}
-            gap={4}
+            gridTemplateColumns={gridTemplate}
+            gap={isMobile ? 2 : 4}
           >
             {filteredUsers.map(user => (
               <div
                 key={user._id}
                 onClick={() => onSelect(user)}
-                className="p-4 sm:p-6 cursor-pointer transition-all duration-200 border-2 border-gray-200 rounded-xl bg-white hover:bg-blue-50 hover:border-blue-300 hover:shadow-md"
+                className={`p-4 cursor-pointer transition-all duration-200 border-2 border-gray-200 rounded-xl bg-white hover:bg-blue-50 hover:border-blue-300 hover:shadow-md ${isMobile ? 'text-center' : ''}`}
               >
-                <div className="flex flex-col items-center text-center space-y-4">
+                <div className="flex flex-col items-center space-y-2">
                   <Avatar
                     sx={{ 
-                      width: 56, 
-                      height: 56, 
-                      fontSize: '1.5rem',
+                      width: isMobile ? 40 : 64, 
+                      height: isMobile ? 40 : 64, 
+                      fontSize: isMobile ? '1.25rem' : '1.75rem',
                       bgcolor: '#EBF5FF',
                       color: '#2563EB'
                     }}
                   >
                     {user.name.charAt(0).toUpperCase()}
                   </Avatar>
-                  <span className="text-base sm:text-lg font-medium text-gray-700 truncate w-full">
+                  <span className={`text-sm font-medium text-gray-700 truncate ${isMobile ? 'w-full' : 'w-24'}`}>
                     {user.name}
                   </span>
                 </div>
@@ -79,7 +81,7 @@ export default function PlayerSelectionTable({ users, onClose, onSelect }) {
 
         {/* No Results Message */}
         {filteredUsers.length === 0 && (
-          <div className="mt-8 sm:mt-10 text-center py-8 sm:py-10 text-gray-500 text-xl bg-gray-50 rounded-xl">
+          <div className="mt-4 text-center py-4 text-gray-500 text-sm bg-gray-50 rounded-xl">
             No players found
           </div>
         )}
