@@ -31,7 +31,7 @@ export async function POST(req) {
       role: user.role // Include role from user document
     })
       .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('1h')
+      .setExpirationTime("1 day") // Token expires in 1 day
       .sign(secret);
 
     // Set the token in cookies

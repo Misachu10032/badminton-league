@@ -22,7 +22,7 @@ export default function Dashboard({ user }) {
       console.log("User or user.requests is null");
       return;
     }
-
+  
     const fetchMatches = async () => {
       try {
         const res = await fetch("/api/get-matches", {
@@ -32,12 +32,20 @@ export default function Dashboard({ user }) {
             matchesIds: [...user.requests.confirmed, ...user.requests.pending],
           }),
         });
-
+  
         if (res.ok) {
           const data = await res.json();
+          // Sort matches by createdAt in descending order (newest first)
+          const sortedPending = data.matches
+            .filter((m) => m.status === "Pending")
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by descending date
+          const sortedConfirmed = data.matches
+            .filter((m) => m.status === "Confirmed")
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by descending date
+  
           setMatches({
-            pending: data.matches.filter((m) => m.status === "Pending"),
-            confirmed: data.matches.filter((m) => m.status === "Confirmed"),
+            pending: sortedPending,
+            confirmed: sortedConfirmed,
           });
         } else {
           console.error("Failed to fetch matches");
@@ -48,9 +56,10 @@ export default function Dashboard({ user }) {
         setLoading(false);
       }
     };
-
+  
     fetchMatches();
   }, [user]);
+  
 
   const onConfirm = async (matchId) => {
     try {
