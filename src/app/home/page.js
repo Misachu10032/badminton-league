@@ -3,38 +3,40 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Dashboard from "../components/Home/DashBoard";
 import RecordMatchModal from "../components/Home/RecordMatchModal"; // Import the modal component
-import UserRank from "../components/Home/UserRank"
+import UserRank from "../components/Home/UserRank";
+import IconButton from "@mui/material/IconButton"; // Import IconButton from Material-UI
+import RefreshIcon from "@mui/icons-material/Refresh"; // Import Refresh Icon from Material-UI
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
+  const fetchUserData = async () => {
+    const userId = Cookies.get("userID");
+    if (!userId) {
+      alert("User not logged in");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/get-user/${userId}`, { method: "GET" });
+
+      if (res.ok) {
+        const userData = await res.json();
+        setUser(userData);
+      } else {
+        throw new Error("Failed to fetch user data");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      alert("Failed to fetch user data.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userId = Cookies.get("userID");
-      if (!userId) {
-        alert("User not logged in");
-        return;
-      }
-      setIsLoading(true);
-      try {
-        const res = await fetch(`/api/get-user/${userId}`, { method: "GET" });
-
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
-        } else {
-          throw new Error("Failed to fetch user data");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        alert("Failed to fetch user data.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchUserData();
   }, []);
 
@@ -66,21 +68,26 @@ export default function HomePage() {
         </div>
       </nav>
 
-
       {/* Pass the user data to the Dashboard component */}
       <UserRank score={user?.score} />
-      <div className="mt-10 ml-4">
+      <div className="mt-10 ml-4 flex items-center space-x-2">
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-blue-600 text-white p-4 rounded-lg shadow-lg hover:bg-blue-700"
         >
           + New Request
         </button>
+        <IconButton
+          onClick={fetchUserData}
+          aria-label="refresh"
+          className="shadow-lg p-2 blue-700 rounded-full"
+
+        >
+          <RefreshIcon className="text-blue-500 h-6 w-6" />
+        </IconButton>
       </div>
 
       <Dashboard user={user} />
-
-      {/* Open Modal Button */}
 
       {/* Popup Modal */}
       {isModalOpen && (
