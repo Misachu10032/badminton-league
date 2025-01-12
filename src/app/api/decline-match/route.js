@@ -4,16 +4,14 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   try {
+    // Parse the request body
     const body = await req.json();
-    console.log(body)
-    const {match }= body; // Extract _id and userIds from the request body
+    console.log(body);
 
-    console.log(match._id,match.userIds,"aaaaaaaaaaa")
-    // Validate the request
-    if (!match._id || !match.userIds) {
-      console.log('Match ID and user IDs are required');
+    const { matchId } = body; // Extract matchId from the request body
+    if (!matchId) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing matchId in request body' },
         { status: 400 }
       );
     }
@@ -23,16 +21,35 @@ export async function POST(req) {
     const usersCollection = db.collection('users');
 
     // Fetch the match document to ensure it exists
+    const match = await matchesCollection.findOne({ _id: new ObjectId(matchId) });
+    if (!match) {
+      return NextResponse.json(
+        { error: 'Match not found' },
+        { status: 404 }
+      );
+    }
+
     // Remove the match ID from each player's requests
-    await usersCollection.updateMany(
+    const userUpdateResult = await usersCollection.updateMany(
       { _id: { $in: match.userIds.map(id => new ObjectId(id)) } },
-      { $pull: { 'requests.pending': match._id, 'requests.confirmed':match._id } } // Remove from both confirmed and pending
+      { $pull: { 'requests.pending': match._id, 'requests.confirmed': match._id } } // Remove from both confirmed and pending
     );
 
     // Delete the match document
-    await matchesCollection.deleteOne({ _id: new ObjectId(match._id) });
+    const matchDeleteResult = await matchesCollection.deleteOne({ _id: new ObjectId(match._id) });
 
-    return NextResponse.json({ message: 'Match declined successfully' });
+    if (matchDeleteResult.deletedCount === 0) {
+      return NextResponse.json(
+        { error: 'Failed to delete match' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      message: 'Match declined successfully',
+      userUpdateResult,
+      matchDeleteResult,
+    });
   } catch (error) {
     console.error('Error declining match:', error);
     return NextResponse.json(

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+
 import { formatDate } from "../../utils/formatDate";
 import ConfirmModal from "./ConfirmModal";
 
@@ -79,8 +80,8 @@ export default function Dashboard({ user }) {
     }
   };
 
-  const onDecline = async (match) => {
-    setMatchToDecline(match);
+  const onDecline = async (matchId) => {
+    setMatchToDecline(matchId);
     setIsDeclineModalOpen(true);
   };
 
@@ -89,7 +90,7 @@ export default function Dashboard({ user }) {
       const res = await fetch(`/api/decline-match`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ match: matchToDecline }),
+        body: JSON.stringify({ matchId: matchToDecline }),
       });
 
       if (res.ok) {
@@ -104,7 +105,13 @@ export default function Dashboard({ user }) {
       console.error("Error declining match:", error);
       alert("Failed to decline match. Please try again.");
     } finally {
+      setMatches((prevMatches) => ({
+        pending: prevMatches.pending.filter(
+          (match) => match._id !== matchToDecline
+        ),
+      }));
       setIsDeclineModalOpen(false);
+
       setMatchToDecline(null);
     }
   };
@@ -113,11 +120,14 @@ export default function Dashboard({ user }) {
     const startIndex = (page - 1) * MATCHES_PER_PAGE;
     return matches.slice(startIndex, startIndex + MATCHES_PER_PAGE);
   };
+  const pendingMatchesToShow = useMemo(
+    () => paginateMatches(matches.pending || [], pendingPage),
+    [matches.pending, pendingPage]
+  );
 
-  const pendingMatchesToShow = paginateMatches(matches.pending, pendingPage);
-  const confirmedMatchesToShow = paginateMatches(
-    matches.confirmed,
-    confirmedPage
+  const confirmedMatchesToShow = useMemo(
+    () => paginateMatches(matches.confirmed || [], confirmedPage),
+    [matches.confirmed, confirmedPage]
   );
 
   if (loading) return <div>Loading matches...</div>;
@@ -174,7 +184,7 @@ export default function Dashboard({ user }) {
                       </button>
 
                       <button
-                        onClick={() => onDecline(match)}
+                        onClick={() => onDecline(match._id)}
                         className="bg-red-600 text-white p-1 sm:px-4 sm:py-2 rounded-lg shadow hover:bg-red-700 transition duration-200 w-full sm:w-auto"
                       >
                         X
@@ -244,58 +254,76 @@ export default function Dashboard({ user }) {
           </button>
         </div>
         {!isConfirmedCollapsed && (
-  <>
-    {confirmedMatchesToShow.length === 0 ? (
-      <p className="text-center">No confirmed matches</p>
-    ) : (
-      <div className="space-y-4">
-        {confirmedMatchesToShow.map((match) => (
-          <div
-            key={match._id}
-            className="p-2 sm:p-4 border rounded-lg bg-gray-50 shadow flex flex-col sm:flex-row justify-between"
-          >
-            <p className="mb-2 sm:mb-0 sm:mr-2">{formatDate(match.createdAt)}</p>
-            <p className="mb-2 sm:mb-0 sm:mr-2">
-              {match.team1.map((p) => p.name).join(", ")} vs{" "}
-              {match.team2.map((p) => p.name).join(", ")}
-            </p>
-            <p className="text-sm sm:text-base">
-              {match.scores.map((s) => `${s.team1}-${s.team2}`).join(" ")}
-            </p>
-          </div>
-        ))}
-      </div>
-    )}
-    {/* Pagination */}
-    <div className="flex flex-col sm:flex-row justify-between mt-4">
-      <button
-        onClick={() => setConfirmedPage((prev) => Math.max(prev - 1, 1))}
-        disabled={confirmedPage === 1}
-        className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow mb-2 sm:mb-0 ${
-          confirmedPage === 1
-            ? "bg-gray-300"
-            : "bg-blue-500 text-white hover:bg-blue-600"
-        }`}
-      >
-        Previous
-      </button>
-      <p className="text-center sm:text-left mb-2 sm:mb-0">Page {confirmedPage} of {Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)}</p>
-      <button
-        onClick={() => setConfirmedPage((prev) => 
-          prev < Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE) ? prev + 1 : prev
+          <>
+            {confirmedMatchesToShow.length === 0 ? (
+              <p className="text-center">No confirmed matches</p>
+            ) : (
+              <div className="space-y-4">
+                {confirmedMatchesToShow.map((match) => (
+                  <div
+                    key={match._id}
+                    className="p-2 sm:p-4 border rounded-lg bg-gray-50 shadow flex flex-col sm:flex-row justify-between"
+                  >
+                    <p className="mb-2 sm:mb-0 sm:mr-2">
+                      {formatDate(match.createdAt)}
+                    </p>
+                    <p className="mb-2 sm:mb-0 sm:mr-2">
+                      {match.team1.map((p) => p.name).join(", ")} vs{" "}
+                      {match.team2.map((p) => p.name).join(", ")}
+                    </p>
+                    <p className="text-sm sm:text-base">
+                      {match.scores
+                        .map((s) => `${s.team1}-${s.team2}`)
+                        .join(" ")}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+            {/* Pagination */}
+            <div className="flex flex-col sm:flex-row justify-between mt-4">
+              <button
+                onClick={() =>
+                  setConfirmedPage((prev) => Math.max(prev - 1, 1))
+                }
+                disabled={confirmedPage === 1}
+                className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow mb-2 sm:mb-0 ${
+                  confirmedPage === 1
+                    ? "bg-gray-300"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
+              >
+                Previous
+              </button>
+              <p className="text-center sm:text-left mb-2 sm:mb-0">
+                Page {confirmedPage} of{" "}
+                {Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)}
+              </p>
+              <button
+                onClick={() =>
+                  setConfirmedPage((prev) =>
+                    prev <
+                    Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
+                      ? prev + 1
+                      : prev
+                  )
+                }
+                disabled={
+                  confirmedPage ===
+                  Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
+                }
+                className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow ${
+                  confirmedPage ===
+                  Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
+                    ? "bg-gray-300"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          </>
         )}
-        disabled={confirmedPage === Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)}
-        className={`p-2 sm:px-4 sm:py-2 rounded-lg shadow ${
-          confirmedPage === Math.ceil(matches.confirmed.length / MATCHES_PER_PAGE)
-            ? "bg-gray-300"
-            : "bg-blue-500 text-white hover:bg-blue-600"
-        }`}
-      >
-        Next
-      </button>
-    </div>
-  </>
-)}
       </section>
       {/* Confirmation Modal */}
       {isDeclineModalOpen && (
