@@ -59,12 +59,22 @@ export default function HomePage() {
       <nav className="bg-white shadow-lg rounded-lg mb-6 p-4">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold text-gray-800">Badminton League</h1>
-          <button
-            onClick={handleLogout}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
-          >
-            Logout
-          </button>
+          <div className="flex space-x-4">
+            {user?.role === "Admin" && (
+              <button
+                onClick={() => (window.location.href = "/admin")}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+              >
+                Admin Panel
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </nav>
 
