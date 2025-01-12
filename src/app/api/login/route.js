@@ -5,19 +5,19 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   const { email } = await req.json(); // Extract email from request body
-  console.log("we here1")
-  console.log(email)
+
   if (!email) {
     return new NextResponse('Email is required', { status: 400 });
   }
-  console.log("we here")
+
+  const lowerCaseEmail = email.toLowerCase();
   try {
     // Connect to the MongoDB database
     const { db } = await connectToDatabase();
     const usersCollection = db.collection('users'); // Assume users are stored in a "users" collection
 
     // Check if the user exists in the database
-    const user = await usersCollection.findOne({ email });
+    const user = await usersCollection.findOne({ lowerCaseEmail });
 
     if (!user) {
       return new NextResponse('Invalid credentials', { status: 401 });
@@ -26,7 +26,7 @@ export async function POST(req) {
     // Generate a JWT token
     const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_SECRET_KEY);
     const token = await new jose.SignJWT({ 
-      email, 
+      lowerCaseEmail, 
       id: user._id.toString(),
       role: user.role // Include role from user document
     })
