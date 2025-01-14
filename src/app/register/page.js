@@ -29,7 +29,7 @@ const RegisterPage = () => {
   // Fetch user data based on id
   const fetchUserData = async (id) => {
     try {
-      const res = await fetch(`/api/user-register-request?id=${id}`);
+      const res = await fetch(`/api/get-register-request?id=${id}`);
       const data = await res.json();
 
       if (data.email) {

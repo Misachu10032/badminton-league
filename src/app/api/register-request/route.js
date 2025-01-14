@@ -43,7 +43,7 @@ export async function POST(req) {
       email,
       name,
       description,
-      status: 'started',
+      status: 'Started',
       
       createdAt: new Date(), // Optionally include a timestamp
     });

@@ -19,8 +19,10 @@ function Requests() {
 
   // Functions to handle confirm and decline actions
   const handleConfirm = async (id) => {
+    console.log(id)
     try {
-      await fetch(`/api/confirm-register-request?requestId=${id}`, { method: 'POST' });
+   
+      await fetch(`/api/confirm-register-request/${id}`, { method: 'POST' });
       
       setRequests(requests.filter(request => request._id !== id));
     } catch (error) {
