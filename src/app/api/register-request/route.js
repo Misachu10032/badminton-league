@@ -5,14 +5,14 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   try {
-    const { email, description } = await req.json(); // Extract email and description from request body
+    const { email, description,name } = await req.json(); // Extract email and description from request body
 
     if (!email || !isValidEmail(email)) {
         return new NextResponse('Invalid email format', { status: 400 });
       }
   
-      if (!description) {
-        return new NextResponse('Description is required', { status: 400 });
+      if (!description|| !name) {
+        return new NextResponse('missing input field', { status: 400 });
       }
 
     // Connect to the MongoDB database
@@ -41,7 +41,10 @@ export async function POST(req) {
     // Insert the new register request document
     const result = await registerRequestsCollection.insertOne({
       email,
+      name,
       description,
+      status: 'started',
+      
       createdAt: new Date(), // Optionally include a timestamp
     });
 

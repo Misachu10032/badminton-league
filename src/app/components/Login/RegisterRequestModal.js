@@ -9,6 +9,7 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
     const formData = new FormData(e.target);
     const email = formData.get("email");
     let description = formData.get("description");
+    const name = formData.get("name");
 
     // If description is empty, set it to a single space
     if (!description) {
@@ -18,7 +19,7 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
     try {
       const res = await fetch("/api/register-request", {
         method: "POST",
-        body: JSON.stringify({ email, description }),
+        body: JSON.stringify({ email, description,name }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -43,7 +44,7 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
         content: {
           width: "80%",
           maxWidth: "400px",
-          height: "50%",
+          height: "40%",
           margin: "auto",
           borderRadius: "10px",
           padding: "30px",
@@ -82,13 +83,29 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
               placeholder="Enter your email address"
             />
           </div>
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="John Smith"
+            />
+          </div>
 
           <div>
             <label
               htmlFor="description"
               className="block text-sm font-medium text-gray-700"
             >
-              Referral/How did you find us?
+              Who Referred you/How did you find us?
             </label>
             <input
               id="description"
