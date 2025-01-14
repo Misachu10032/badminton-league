@@ -4,16 +4,16 @@ import { ObjectId } from 'mongodb';
 import nodemailer from 'nodemailer';
 
 export async function POST(req, { params }) {
-  const { requestId } =await params;
+  const { requestId } = await params;
 
   console.log("Confirming request with ID:", requestId);
-  
+
   try {
     const { db } = await connectToDatabase();
-    
+
     // Find the document in user_register_requests collection
-    const request = await db.collection('user_register_requests').findOne({ 
-      _id: new ObjectId(requestId) 
+    const request = await db.collection('user_register_requests').findOne({
+      _id: new ObjectId(requestId)
     });
 
     if (!request) {
@@ -34,16 +34,23 @@ export async function POST(req, { params }) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user:  process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS// DO NOT hardcode passwords in production; use environment variables
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS // DO NOT hardcode passwords in production; use environment variables
       }
     });
 
     const mailOptions = {
-      from:  process.env.EMAIL_USER,
+      from: process.env.EMAIL_USER,
       to: email,
       subject: 'Cab Badminton League Confirmation',
-      text: 'Hello!'
+      text: `Hello,
+      
+You can use the following link to create an account:
+
+https://badminton-league.vercel.app/register?id=${requestId}
+
+
+Have fun climbing the rank by playing more badminton😊`
     };
 
     await transporter.sendMail(mailOptions);
