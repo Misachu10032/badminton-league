@@ -65,25 +65,6 @@ function Requests() {
     console.log("Edit user with id:", id);
   };
 
-  const handleDeleteUser = async (id) => {
-    try {
-      const response = await fetch(`/api/decline-register-request`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
-      });
-      const result = await response.json();
-      if (response.ok) {
-        setRequests(requests.filter((request) => request._id !== id));
-        console.log(result.message);
-      } else {
-        console.log(result.error);
-      }
-    } catch (error) {
-      console.error("Failed to decline request:", error);
-    }
-  };
-
   const handleLogout = () => {
     Cookies.remove("userID");
     Cookies.remove("token");
@@ -123,9 +104,7 @@ function Requests() {
         />
       </div>
       <div className="bg-white shadow-md rounded-lg p-6 mt-8">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          User Management
-        </h2>
+
         <UserManagementTable
           users={users}
           handleEditUser={handleEditUser}
