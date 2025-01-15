@@ -129,7 +129,7 @@ function Requests() {
         <UserManagementTable
           users={users}
           handleEditUser={handleEditUser}
-          handleDeleteUser={handleDeleteUser}
+          setUsers={setUsers}
         />
       </div>
     </div>

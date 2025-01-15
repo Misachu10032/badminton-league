@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import DoubleCheckModal from "../common/DoubleCheckModal";
-const UserManagementTable = ({ users, handleEditUser, handleDeleteUser }) => {
+const UserManagementTable = ({ users, handleEditUser, setUsers }) => {
   const [isDoubleCheckModalOpen, setIsDoubleCheckModalOpen] = useState(false);
     const [userIdToDelete, setUserIdToDelete] = useState(null);
 
@@ -14,7 +14,30 @@ const UserManagementTable = ({ users, handleEditUser, handleDeleteUser }) => {
 
   
   const handleConfirmDelete = async () => {
-  
+    try {
+      const res = await fetch(`/api/delete-user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: userIdToDelete }),
+      });
+
+      if (res.ok) {
+        alert("User deleted successfully!");
+        // Refresh users list or update state as needed
+      } else {
+        const error = await res.json();
+        console.error("Error deleting user:", error);
+        alert(error.message || "Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Failed to delete user. Please try again.");
+    } finally {
+      // Update the state to remove the deleted user from the list
+      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userIdToDelete));
+      setIsDoubleCheckModalOpen(false);
+      setUserIdToDelete(null);
+    }
   };
 
 
