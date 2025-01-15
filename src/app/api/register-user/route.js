@@ -39,24 +39,24 @@ export async function POST(req) {
     //   email: { $regex: `^${email}$`, $options: "i" },
     // });
 
-    // if (existingUser) {
-    //   return new NextResponse(
-    //     JSON.stringify({ error: "Email already registered", message: "This email is already registered as a user." }),
-    //     { status: 409 }
-    //   );
-    // }
+    if (existingUser) {
+      return new NextResponse(
+        JSON.stringify({ error: "Email already registered", message: "This email is already registered as a user." }),
+        { status: 409 }
+      );
+    }
 
     // Check if name already exists (case-insensitive)
-    // const existingName = await usersCollection.findOne({
-    //   name: { $regex: `^${name}$`, $options: "i" },
-    // });
+    const existingName = await usersCollection.findOne({
+      name: { $regex: `^${name}$`, $options: "i" },
+    });
 
-    // if (existingName) {
-    //   return new NextResponse(
-    //     JSON.stringify({ error: "Name already taken", message: "The name is already taken by another user." }),
-    //     { status: 409 }
-    //   );
-    // }
+    if (existingName) {
+      return new NextResponse(
+        JSON.stringify({ error: "Name already taken", message: "The name is already taken by another user." }),
+        { status: 409 }
+      );
+    }
 
     // Insert the new user document with score and role
     const result = await usersCollection.insertOne({
@@ -74,7 +74,7 @@ export async function POST(req) {
 
     // Update the user register request status to 'Complete'
     await registerRequestsCollection.updateOne(
-      { _id: requestId },
+      { _id: new ObjectId(requestId) },
       { $set: { status: "Complete" } }
     );
 

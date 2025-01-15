@@ -4,30 +4,47 @@ let client;
 let clientPromise;
 
 export async function connectToDatabase() {
-  // Use the MongoDB URI from environment variables
   const uri = process.env.MONGODB_URI;
 
   if (!uri) {
     throw new Error('Please define the MONGODB_URI environment variable in your .env file');
   }
 
-  if (!client) {
-    // Create a new MongoClient
+  if (!clientPromise) {
     client = new MongoClient(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      maxPoolSize: 30,
+      minPoolSize: 0,
     });
-
-    // Connect to the MongoDB server
     clientPromise = client.connect();
   }
 
-  // Wait for the client to be ready
-  await clientPromise;
-
-  // Return the database and client
-  return {
-    client,
-    db: client.db(process.env.MONGODB_DB), // Use the database name from .env
-  };
+  try {
+    await clientPromise;
+    return {
+      client,
+      db: client.db(process.env.MONGODB_DB),
+    };
+  } catch (error) {
+    console.error('Database connection error:', error);
+    await clientPromise; // Attempt to reconnect
+    return {
+      client,
+      db: client.db(process.env.MONGODB_DB),
+    };
+  }
 }
+
+// Graceful shutdown handler
+async function closeDatabaseConnection() {
+  if (client) {
+    await client.close();
+  }
+}
+
+// Attach the shutdown handler to the process
+process.on('SIGINT', async () => {
+  await closeDatabaseConnection();
+  process.exit(0);
+});
