@@ -37,13 +37,13 @@ const RegistrationTable = ({ requests, handleConfirm, handleDecline }) => {
                 <button
                   onClick={() => handleConfirm(request._id)}
                   className={`w-24 py-2 rounded-lg shadow-md transition duration-200 ${
-                    request.status === "Pending"
-                      ? "cursor-not-allowed bg-gray-400 text-gray-700"
-                      : "bg-green-600 text-white hover:bg-green-700"
+                    request.status === "Started"
+                      ?  "bg-green-600 text-white hover:bg-green-700"
+                      :"cursor-not-allowed bg-gray-400 text-gray-700"
                   }`}
-                  disabled={request.status === "Pending"}
+                  disabled={request.status !== "Started"}
                 >
-                  {request.status === "Pending" ? "Confirmed" : "Confirm"}
+                  {request.status === "Started" ? "Confirm" : "Confirmed"}
                 </button>
                 <button
                   onClick={() => handleDecline(request._id)}
