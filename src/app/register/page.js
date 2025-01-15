@@ -1,4 +1,3 @@
-// pages/register.js
 "use client";
 import { useEffect, useState } from 'react';
 
@@ -10,6 +9,7 @@ const RegisterPage = () => {
     name: '',
     sex: ''
   });
+  const [users, setUsers] = useState([]);
 
   // Fetch query params and user data based on id
   useEffect(() => {
@@ -23,7 +23,10 @@ const RegisterPage = () => {
 
     if (params.id) {
       fetchUserData(params.id);
+    }else{
+      setError("ID not found in the url");
     }
+    fetchAllUsers();
   }, []);
 
   // Fetch user data based on id
@@ -42,29 +45,58 @@ const RegisterPage = () => {
     }
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Fetch all users for comparison
+  const fetchAllUsers = async () => {
     try {
-      const res = await fetch('/api/register-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...formData, email: userEmail }),
-      });
-
-      if (res.ok) {
-        const result = await res.json();
-        alert('Registration successful');
-      } else {
-        const result = await res.json();
-        setError(result.error || 'Registration failed');
-      }
-    } catch (err) {
-      setError('An error occurred');
+      const res = await fetch('/api/get-all-users');
+      const data = await res.json();
+      setUsers(data);
+    } catch (error) {
+      setError('Error fetching users');
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Check if name already exists (case-insensitive)
+    const existingUser = users.find(
+      (user) => user.name.toLowerCase() === formData.name.toLowerCase()
+    );
+  
+    if (existingUser) {
+      setError("Name already taken");
+      return;
+    }
+  
+    try {
+      const res = await fetch("/api/register-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          email: userEmail,
+          requestId: queryParams.id,
+        }),
+      });
+  
+      if (res.ok) {
+
+        alert("Registration successful. You can now login with your email");
+      } else {
+        const result = await res.json();
+        // Check if there's a message in the response, otherwise use a generic message
+        const errorMessage = result?.message || "Registration failed. Please try again.";
+        setError(errorMessage);
+      }
+    } catch (err) {
+      // Catch network errors or other unexpected issues
+      setError("An error occurred while registering. Please try again later.");
+    }
+  };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -115,7 +147,6 @@ const RegisterPage = () => {
             <option value="">Select</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
-            <option value="other">Other</option>
           </select>
         </div>
 
