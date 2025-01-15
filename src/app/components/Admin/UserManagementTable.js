@@ -30,7 +30,9 @@ const UserManagementTable = ({ users, handleEditUser, setUsers }) => {
       console.error("Error deleting user:", error);
       alert("Failed to delete user. Please try again.");
     } finally {
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userIdToDelete));
+      setUsers((prevUsers) =>
+        prevUsers.filter((user) => user._id !== userIdToDelete)
+      );
       setIsDoubleCheckModalOpen(false);
       setUserIdToDelete(null);
     }
@@ -43,30 +45,44 @@ const UserManagementTable = ({ users, handleEditUser, setUsers }) => {
 
   return (
     <div>
-      <div className="flex justify-between mb-4">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+      <div className="flex flex-row justify-between mb-4">
+        <h2 className="sm:text-3xl text-lg font-semibold text-gray-800">
           User Management
         </h2>
 
-        <button
-            onClick={toggleCollapse}
-            className="text-blue-500 underline"
-          >
-            {isTableCollapsed ? "Expand" : "Collapse"}
-          </button>
+        <button onClick={toggleCollapse} className="text-blue-500 underline">
+          {isTableCollapsed ? "Expand" : "Collapse"}
+        </button>
       </div>
 
-      <table className={`min-w-full bg-white border-collapse mt-6 ${isTableCollapsed ? "hidden" : ""}`}>
+      <table
+        className={`min-w-full bg-white border-collapse mt-6 ${
+          isTableCollapsed ? "hidden" : ""
+        }`}
+      >
         <tbody className="divide-y divide-gray-200">
           {users.map((user) => (
-            <tr key={user._id} className="border rounded-lg bg-gray-50 shadow flex flex-col sm:flex-row items-center justify-between p-2 sm:p-4">
-              <td className="w-full sm:w-1/5 mb-2 sm:mb-0 text-sm text-gray-600 font-bold text-lg ">{user.name}</td>
-              <td className="w-full sm:w-2/5 mb-2 sm:mb-0 text-sm text-gray-600">{user.email}</td>
-              <td className="w-full sm:w-1/5 mb-2 sm:mb-0 text-sm text-gray-500">{user.score}</td>
+            <tr
+              key={user._id}
+              className="border rounded-lg bg-gray-50 shadow flex flex-col sm:flex-row items-center justify-between p-2 sm:p-4"
+            >
+              <td className="w-full sm:w-1/5 mb-2 sm:mb-0 text-sm text-gray-600 font-bold text-lg ">
+                {user.name}
+              </td>
+              <td className="w-full sm:w-2/5 mb-2 sm:mb-0 text-sm text-gray-600">
+                {user.email}
+              </td>
+              <td className="w-full sm:w-1/5 mb-2 sm:mb-0 text-sm text-gray-500">
+                {user.score}
+              </td>
               <td className="w-full sm:w-auto flex space-x-2">
                 <button
                   onClick={() => handleEditUser(user._id)}
-                  className={`w-24 py-2 rounded-lg shadow-md transition duration-200 ${user.editable ? "bg-blue-600 text-white hover:bg-blue-700" : "cursor-not-allowed bg-gray-400 text-gray-700"}`}
+                  className={`w-24 py-2 rounded-lg shadow-md transition duration-200 ${
+                    user.editable
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "cursor-not-allowed bg-gray-400 text-gray-700"
+                  }`}
                   disabled={!user.editable}
                 >
                   Edit

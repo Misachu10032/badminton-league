@@ -94,9 +94,7 @@ function Requests() {
         </div>
       </nav>
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          Registration Requests
-        </h2>
+
         <RegistrationTable
           requests={requests}
           handleConfirm={handleConfirm}
