@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const { db } = await connectToDatabase();
     const users = await db.collection('users')
-      .find({}, { projection: { name: 1, _id: 1, score:1 } })
+      .find({}, { projection: { name: 1, _id: 1, score:1,email:1 } })
       .toArray();
 
       console.log(users);

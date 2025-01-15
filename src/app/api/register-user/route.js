@@ -35,9 +35,9 @@ export async function POST(req) {
     }
 
     // Check if email already exists in users (case-insensitive)
-    // const existingUser = await usersCollection.findOne({
-    //   email: { $regex: `^${email}$`, $options: "i" },
-    // });
+    const existingUser = await usersCollection.findOne({
+      email: { $regex: `^${email}$`, $options: "i" },
+    });
 
     if (existingUser) {
       return new NextResponse(

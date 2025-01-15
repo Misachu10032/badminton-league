@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 
 import { formatDate } from "../../utils/formatDate";
-import ConfirmModal from "./ConfirmModal";
+import DoubleCheckModal from "../common/DoubleCheckModal";
 
 const MATCHES_PER_PAGE = 10; // Matches per page
 
@@ -22,7 +22,7 @@ export default function Dashboard({ user }) {
       console.log("User or user.requests is null");
       return;
     }
-  
+
     const fetchMatches = async () => {
       try {
         const res = await fetch("/api/get-matches", {
@@ -32,7 +32,7 @@ export default function Dashboard({ user }) {
             matchesIds: [...user.requests.confirmed, ...user.requests.pending],
           }),
         });
-  
+
         if (res.ok) {
           const data = await res.json();
           // Sort matches by createdAt in descending order (newest first)
@@ -42,7 +42,7 @@ export default function Dashboard({ user }) {
           const sortedConfirmed = data.matches
             .filter((m) => m.status === "Confirmed")
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by descending date
-  
+
           setMatches({
             pending: sortedPending,
             confirmed: sortedConfirmed,
@@ -56,10 +56,9 @@ export default function Dashboard({ user }) {
         setLoading(false);
       }
     };
-  
+
     fetchMatches();
   }, [user]);
-  
 
   const onConfirm = async (matchId) => {
     try {
@@ -336,7 +335,9 @@ export default function Dashboard({ user }) {
       </section>
       {/* Confirmation Modal */}
       {isDeclineModalOpen && (
-        <ConfirmModal
+        <DoubleCheckModal
+          title="Cancel Match Request"
+          message="Are you sure you would like to cancel this match request?"
           isOpen={isDeclineModalOpen}
           onClose={() => setIsDeclineModalOpen(false)}
           onConfirm={handleConfirmDecline}

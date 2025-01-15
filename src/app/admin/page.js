@@ -1,21 +1,32 @@
+// Requests.js
 "use client";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import RegistrationTable from "../components/Admin/RegistrationTable";
+import UserManagementTable from "../components/Admin/UserManagementTable";
 
 function Requests() {
   const [requests, setRequests] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    async function fetchRequests() {
+    async function fetchData() {
       try {
-        const response = await fetch("/api/get-all-register-requests");
-        const data = await response.json();
-        setRequests(data);
+        const [requestsResponse, usersResponse] = await Promise.all([
+          fetch("/api/get-all-register-requests"),
+          fetch("/api/get-all-users"), // Assuming this endpoint exists
+        ]);
+
+        const requestsData = await requestsResponse.json();
+        const usersData = await usersResponse.json();
+
+        setRequests(requestsData);
+        setUsers(usersData);
       } catch (error) {
-        console.error("Failed to fetch requests:", error);
+        console.error("Failed to fetch data:", error);
       }
     }
-    fetchRequests();
+    fetchData();
   }, []);
 
   const handleConfirm = async (id) => {
@@ -32,6 +43,29 @@ function Requests() {
   };
 
   const handleDecline = async (id) => {
+    try {
+      const response = await fetch(`/api/decline-register-request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setRequests(requests.filter((request) => request._id !== id));
+        console.log(result.message);
+      } else {
+        console.log(result.error);
+      }
+    } catch (error) {
+      console.error("Failed to decline request:", error);
+    }
+  };
+
+  const handleEditUser = async (id) => {
+    console.log("Edit user with id:", id);
+  };
+
+  const handleDeleteUser = async (id) => {
     try {
       const response = await fetch(`/api/decline-register-request`, {
         method: "POST",
@@ -82,60 +116,21 @@ function Requests() {
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">
           Registration Requests
         </h2>
-        <table className="min-w-full bg-white border-collapse">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {requests.map((request) => (
-              <tr key={request._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {request.name}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
-                  {request.email}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-500">
-                  {request.status}
-                </td>
-                <td className="px-6 py-4 text-sm">
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleConfirm(request._id)}
-                      className={`w-24 py-2 rounded-lg shadow-md transition duration-200 ${
-                        request.status === "Pending"
-                          ? "cursor-not-allowed bg-gray-400 text-gray-700"
-                          : "bg-green-600 text-white hover:bg-green-700"
-                      }`}
-                      disabled={request.status === "Pending"}
-                    >
-                      {request.status === "Pending" ? "Confirmed" : "Confirm"}
-                    </button>
-                    <button
-                      onClick={() => handleDecline(request._id)}
-                      className="w-24 bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 transition duration-200"
-                    >
-                      X
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <RegistrationTable
+          requests={requests}
+          handleConfirm={handleConfirm}
+          handleDecline={handleDecline}
+        />
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-6 mt-8">
+        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+          User Management
+        </h2>
+        <UserManagementTable
+          users={users}
+          handleEditUser={handleEditUser}
+          handleDeleteUser={handleDeleteUser}
+        />
       </div>
     </div>
   );

@@ -1,13 +1,13 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const RegisterPage = () => {
   const [queryParams, setQueryParams] = useState({});
-  const [userEmail, setUserEmail] = useState('');
-  const [error, setError] = useState('');
+  const [userEmail, setUserEmail] = useState("");
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    name: '',
-    sex: ''
+    name: "",
+    sex: "",
   });
   const [users, setUsers] = useState([]);
 
@@ -23,7 +23,7 @@ const RegisterPage = () => {
 
     if (params.id) {
       fetchUserData(params.id);
-    }else{
+    } else {
       setError("ID not found in the url");
     }
     fetchAllUsers();
@@ -38,37 +38,37 @@ const RegisterPage = () => {
       if (data.email) {
         setUserEmail(data.email);
       } else {
-        setError('User not found');
+        setError("User not found");
       }
     } catch (error) {
-      setError('Error fetching user data');
+      setError("Error fetching user data");
     }
   };
 
   // Fetch all users for comparison
   const fetchAllUsers = async () => {
     try {
-      const res = await fetch('/api/get-all-users');
+      const res = await fetch("/api/get-all-users");
       const data = await res.json();
       setUsers(data);
     } catch (error) {
-      setError('Error fetching users');
+      setError("Error fetching users");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Check if name already exists (case-insensitive)
     const existingUser = users.find(
       (user) => user.name.toLowerCase() === formData.name.toLowerCase()
     );
-  
+
     if (existingUser) {
       setError("Name already taken");
       return;
     }
-  
+
     try {
       const res = await fetch("/api/register-user", {
         method: "POST",
@@ -81,14 +81,14 @@ const RegisterPage = () => {
           requestId: queryParams.id,
         }),
       });
-  
-      if (res.ok) {
 
+      if (res.ok) {
         alert("Registration successful. You can now login with your email");
       } else {
         const result = await res.json();
         // Check if there's a message in the response, otherwise use a generic message
-        const errorMessage = result?.message || "Registration failed. Please try again.";
+        const errorMessage =
+          result?.message || "Registration failed. Please try again.";
         setError(errorMessage);
       }
     } catch (err) {
@@ -96,7 +96,6 @@ const RegisterPage = () => {
       setError("An error occurred while registering. Please try again later.");
     }
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -110,7 +109,9 @@ const RegisterPage = () => {
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
       <h1 className="text-3xl font-semibold text-center mb-6">Register</h1>
 
-      {error && <div className="bg-red-100 text-red-800 p-2 rounded mb-4">{error}</div>}
+      {error && (
+        <div className="bg-red-100 text-red-800 p-2 rounded mb-4">{error}</div>
+      )}
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700">Email</label>
@@ -124,7 +125,9 @@ const RegisterPage = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Name</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Name
+          </label>
           <input
             type="text"
             name="name"
@@ -138,7 +141,7 @@ const RegisterPage = () => {
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Sex</label>
           <select
-            name="sex"
+            name="Gender"
             value={formData.sex}
             onChange={handleInputChange}
             required
