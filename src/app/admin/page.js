@@ -20,7 +20,11 @@ function Requests() {
   const handleConfirm = async (id) => {
     try {
       await fetch(`/api/confirm-register-request/${id}`, { method: "POST" });
-      setRequests(requests.filter((request) => request._id !== id));
+      setRequests(
+        requests.map((request) =>
+          request._id === id ? { ...request, status: "Pending" } : request
+        )
+      );
     } catch (error) {
       console.error("Failed to confirm request:", error);
     }
@@ -28,8 +32,18 @@ function Requests() {
 
   const handleDecline = async (id) => {
     try {
-      await fetch(`/api/decline-register-request?id=${id}`, { method: "POST" });
-      setRequests(requests.filter((request) => request._id !== id));
+      const response = await fetch(`/api/decline-register-request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setRequests(requests.filter((request) => request._id !== id));
+        console.log(result.message);
+      } else {
+        console.log(result.error);
+      }
     } catch (error) {
       console.error("Failed to decline request:", error);
     }
@@ -64,35 +78,56 @@ function Requests() {
         </div>
       </nav>
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">Registration Requests</h2>
+        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+          Registration Requests
+        </h2>
         <table className="min-w-full bg-white border-collapse">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Email</th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Status</th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Actions</th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
+                Name
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {requests.map((request) => (
               <tr key={request._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">{request.name}</td>
-                <td className="px-6 py-4 text-sm text-gray-600">{request.email}</td>
-                <td className="px-6 py-4 text-sm text-gray-500">{request.status}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  {request.name}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {request.email}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-500">
+                  {request.status}
+                </td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleConfirm(request._id)}
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-700 transition duration-200"
+                      className={`w-24 py-2 rounded-lg shadow-md transition duration-200 ${
+                        request.status === "Pending"
+                          ? "cursor-not-allowed bg-gray-400 text-gray-700"
+                          : "bg-green-600 text-white hover:bg-green-700"
+                      }`}
+                      disabled={request.status === "Pending"}
                     >
-                      Confirm
+                      {request.status === "Pending" ? "Confirmed" : "Confirm"}
                     </button>
                     <button
                       onClick={() => handleDecline(request._id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 transition duration-200"
+                      className="w-24 bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 transition duration-200"
                     >
-                      Decline
+                      X
                     </button>
                   </div>
                 </td>
