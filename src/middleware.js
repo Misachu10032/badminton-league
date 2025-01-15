@@ -6,7 +6,7 @@ export async function middleware(request) {
   const token = request.cookies.get('token');
   
   // Define protected paths that require authentication
-  const protectedPaths = ['/home', '/admin', '/api/confirm-request'];
+  const protectedPaths = ['/home', '/admin', '/api/confirm-request','/api/delete-user'];
   // Define public paths that should redirect to home if already authenticated
   const publicPaths = ['/login', '/register'];
 
@@ -20,7 +20,7 @@ export async function middleware(request) {
       const payload = verified.payload;
       
       // Check if the user is trying to access a protected admin route
-      const isAdminRoute = ['/admin', '/api/confirm-request'].includes(request.nextUrl.pathname);
+      const isAdminRoute = ['/admin', '/api/confirm-request','/api/delete-user'].includes(request.nextUrl.pathname);
 
       if (isProtectedRoute && isAdminRoute && payload.role !== 'Admin') {
         // If the user does not have admin role, redirect to home
@@ -54,7 +54,8 @@ export const config = {
   matcher: [
     '/home',
     '/admin',
-    '/api/confirm-request', // Protect the API path
+    '/api/confirm-request', 
+    '/api/delete-user',// Protect the API path
     '/login',
     '/register'
   ]
