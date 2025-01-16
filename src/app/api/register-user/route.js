@@ -29,7 +29,7 @@ export async function POST(req) {
 
     if (!registerRequest) {
       return new NextResponse(
-        JSON.stringify({ error: "Request not found or not in pending status", message: "The registration request does not exist or is not in 'Pending' status." }),
+        JSON.stringify({ error: "Request not found or not in pending status", message: "Invalid Registration Request" }),
         { status: 404 }
       );
     }

@@ -83,7 +83,9 @@ const RegisterPage = () => {
       });
 
       if (res.ok) {
-        alert("Registration successful. You can now login with your email");
+        alert(
+          "Registration successful.\n Please check out the rules page before login with your email."
+        );
       } else {
         const result = await res.json();
         // Check if there's a message in the response, otherwise use a generic message
@@ -94,6 +96,8 @@ const RegisterPage = () => {
     } catch (err) {
       // Catch network errors or other unexpected issues
       setError("An error occurred while registering. Please try again later.");
+    } finally {
+      window.location.href = "/rules";
     }
   };
 
@@ -139,7 +143,9 @@ const RegisterPage = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Gender</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Gender
+          </label>
           <select
             name="sex"
             value={formData.sex}
