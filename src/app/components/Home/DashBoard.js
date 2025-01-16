@@ -7,9 +7,7 @@ import DoubleCheckModal from "../common/DoubleCheckModal";
 
 const MATCHES_PER_PAGE = 10; // Matches per page
 
-export default function Dashboard({ user }) {
-  const [matches, setMatches] = useState({ pending: [], confirmed: [] });
-  const [loading, setLoading] = useState(true);
+export default function Dashboard({ user, matches, setMatches }) {
   const [isPendingCollapsed, setIsPendingCollapsed] = useState(false);
   const [isConfirmedCollapsed, setIsConfirmedCollapsed] = useState(true);
   const [pendingPage, setPendingPage] = useState(1);
@@ -22,43 +20,7 @@ export default function Dashboard({ user }) {
       console.log("User or user.requests is null");
       return;
     }
-
-    const fetchMatches = async () => {
-      try {
-        const res = await fetch("/api/get-matches", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            matchesIds: [...user.requests.confirmed, ...user.requests.pending],
-          }),
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          // Sort matches by createdAt in descending order (newest first)
-          const sortedPending = data.matches
-            .filter((m) => m.status === "Pending")
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by descending date
-          const sortedConfirmed = data.matches
-            .filter((m) => m.status === "Confirmed")
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by descending date
-
-          setMatches({
-            pending: sortedPending,
-            confirmed: sortedConfirmed,
-          });
-        } else {
-          console.error("Failed to fetch matches");
-        }
-      } catch (error) {
-        console.error("Error fetching matches:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMatches();
-  }, [user]);
+  });
 
   const onConfirm = async (matchId) => {
     try {
@@ -137,8 +99,6 @@ export default function Dashboard({ user }) {
     () => paginateMatches(matches.confirmed || [], confirmedPage),
     [matches.confirmed, confirmedPage]
   );
-
-  if (loading) return <div>Loading matches...</div>;
 
   return (
     <div className="p-4 mt-2">
