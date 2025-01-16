@@ -79,6 +79,7 @@ export default function Dashboard({ user, matches, setMatches }) {
         pending: prevMatches.pending.filter(
           (match) => match._id !== matchToDecline
         ),
+        confirmed: prevMatches.confirmed,
       }));
       setIsDeclineModalOpen(false);
 

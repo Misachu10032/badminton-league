@@ -21,9 +21,9 @@ export default function HomePage() {
         alert("User not logged in");
         return;
       }
-  
+
       setIsLoading(true);
-  
+
       // Fetch user data
       const res = await fetch(`/api/get-user/${userId}`, { method: "GET" });
       if (!res.ok) {
@@ -32,21 +32,23 @@ export default function HomePage() {
       const userData = await res.json();
       setUser(userData);
       console.log("userData", userData.requests);
-  
+
       // Fetch matches based on user requests
       const matchRes = await fetch("/api/get-matches", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          matchesIds: [...userData.requests.confirmed, ...userData.requests.pending],
+          matchesIds: [
+            ...userData.requests.confirmed,
+            ...userData.requests.pending,
+          ],
         }),
       });
-  
+
       if (!matchRes.ok) {
         throw new Error("Failed to fetch matches");
       }
       const matchData = await matchRes.json();
-  console.log(matchData);
       // Sort matches by `createdAt` in descending order
       const sortedPending = matchData.matches
         .filter((m) => m.status === "Pending")
@@ -54,7 +56,7 @@ export default function HomePage() {
       const sortedConfirmed = matchData.matches
         .filter((m) => m.status === "Confirmed")
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  
+
       // Update state
       setMatches({
         pending: sortedPending,
@@ -67,13 +69,9 @@ export default function HomePage() {
       setIsLoading(false);
     }
   };
-  
 
   useEffect(() => {
-
-  
-      fetchUserData();
-   
+    fetchUserData();
   }, []);
 
   const handleLogout = () => {
@@ -141,7 +139,7 @@ export default function HomePage() {
           onClose={() => setIsModalOpen(false)}
           currentUser={user}
           matches={matches}
-          setMatches={setMatches}
+          fetchUserData={fetchUserData}
         />
       )}
     </div>
