@@ -139,9 +139,9 @@ const RegisterPage = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Sex</label>
+          <label className="block text-sm font-medium text-gray-700">Gender</label>
           <select
-            name="Gender"
+            name="sex"
             value={formData.sex}
             onChange={handleInputChange}
             required
