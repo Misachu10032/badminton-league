@@ -12,25 +12,59 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
-  const fetchUserData = async () => {
-    const userId = Cookies.get("userID");
-    if (!userId) {
-      alert("User not logged in");
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const res = await fetch(`/api/get-user/${userId}`, { method: "GET" });
+  const [matches, setMatches] = useState({ pending: [], confirmed: [] });
 
-      if (res.ok) {
-        const userData = await res.json();
-        setUser(userData);
-      } else {
+  const fetchUserData = async () => {
+    try {
+      const userId = Cookies.get("userID");
+      if (!userId) {
+        alert("User not logged in");
+        return;
+      }
+
+      setIsLoading(true);
+
+      // Fetch user data
+      const res = await fetch(`/api/get-user/${userId}`, { method: "GET" });
+      if (!res.ok) {
         throw new Error("Failed to fetch user data");
       }
+      const userData = await res.json();
+      setUser(userData);
+      console.log("userData", userData.requests);
+
+      // Fetch matches based on user requests
+      const matchRes = await fetch("/api/get-matches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matchesIds: [
+            ...userData.requests.confirmed,
+            ...userData.requests.pending,
+          ],
+        }),
+      });
+
+      if (!matchRes.ok) {
+        throw new Error("Failed to fetch matches");
+      }
+      const matchData = await matchRes.json();
+      // Sort matches by `createdAt` in descending order
+      const sortedPending = matchData.matches
+        .filter((m) => m.status === "Pending")
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const sortedConfirmed = matchData.matches
+        .filter((m) => m.status === "Confirmed")
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      // Update state
+      setMatches({
+        pending: sortedPending,
+        confirmed: sortedConfirmed,
+      });
     } catch (error) {
-      console.error("Error fetching user data:", error);
-      alert("Failed to fetch user data.");
+      console.error("Error fetching user or match data:", error.message);
+      alert("An error occurred while fetching data. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -79,6 +113,7 @@ export default function HomePage() {
       </nav>
 
       {/* Pass the user data to the Dashboard component */}
+      <h1 className="text-2xl font-bold text-gray-800">{user?.name}</h1>
       <UserRank score={user?.score} />
       <div className="mt-10 ml-4 flex items-center space-x-2">
         <button
@@ -91,13 +126,12 @@ export default function HomePage() {
           onClick={fetchUserData}
           aria-label="refresh"
           className="shadow-lg p-2 blue-700 rounded-full"
-
         >
           <RefreshIcon className="text-blue-500 h-6 w-6" />
         </IconButton>
       </div>
 
-      <Dashboard user={user} />
+      <Dashboard user={user} matches={matches} setMatches={setMatches} />
 
       {/* Popup Modal */}
       {isModalOpen && (
@@ -105,6 +139,8 @@ export default function HomePage() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           currentUser={user}
+          matches={matches}
+          fetchUserData={fetchUserData}
         />
       )}
     </div>

@@ -1,7 +1,8 @@
-import { addScoreToUsers } from "./addScore";
+
 import { connectToDatabase } from "../lib/mongodb";
-import { findWinners } from "@/app/utils/findWinners";
+
 import { ObjectId } from "mongodb";
+import { scoreSettlement } from "./scoreSettlement";
 
 export async function POST(req) {
   const { db } = await connectToDatabase();
@@ -75,9 +76,8 @@ export async function POST(req) {
         }
       );
       // Determine the winners and update scores
-      const { winners, losers } = findWinners(match);
-      await addScoreToUsers(winners, 50);
-      await addScoreToUsers(losers, 10);
+
+      await scoreSettlement(match, db);
 
       return new Response(
         JSON.stringify({

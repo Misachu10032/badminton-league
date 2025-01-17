@@ -9,8 +9,9 @@ import {
 import PlayerSelectionTable from "./PlayerSelectionTable";
 import ScoreInput from "../common/SocreInput"; // Ensure the path is correct
 import { validateForm } from "../../utils/validateMatch"; // Ensure the path is correct
+import { canRecordNewMatch } from "@/app/utils/maxMatchesInADay";
 
-export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
+export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,fetchUserData }) {
   const [isDoubleGame, setIsDoubleGame] = useState(true);
   const [users, setUsers] = useState([]);
   const [showUserSelection, setShowUserSelection] = useState(false);
@@ -118,6 +119,11 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!canRecordNewMatch(matches)) {
+      alert("You have already recorded the maximum number of matches today.");
+      return;
+    }
+
     const errors = validateForm(formData); // Use the validation function
     console.log("Errors:", errors);
     setFormErrors(errors);
@@ -156,6 +162,7 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser }) {
       });
 
       if (response.ok) {
+        fetchUserData();
         onClose();
       } else {
         console.error("Failed to submit match");

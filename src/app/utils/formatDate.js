@@ -7,6 +7,7 @@ export const formatDate = (timestamp) => {
       year: 'numeric',
       month: 'numeric',
       day: 'numeric',
+      timeZone: 'America/Edmonton',
     };
   
     return date.toLocaleDateString('en-US', options);
