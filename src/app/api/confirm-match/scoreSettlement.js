@@ -123,7 +123,9 @@ export async function scoreSettlement(match, db) {
         { _id: loserDoc._id },
         {
           $set: {
-            score: loserDoc.score + hardworkScore + rankingScore,
+            score:
+              (loserDoc.score + hardworkScore + rankingScore) *
+              (Math.floor(totalGames / 2) + 1),
             teammate: loserDoc.teammate,
           },
         }

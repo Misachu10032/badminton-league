@@ -94,6 +94,12 @@ export default function HomePage() {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-800">Badminton League</h1>
           <div className="flex space-x-4">
+          <button
+                onClick={() => (window.location.href = "/rules")}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+              >
+               Rules
+              </button>
             {user?.role === "Admin" && (
               <button
                 onClick={() => (window.location.href = "/admin")}
