@@ -34,8 +34,11 @@ export const validateForm = (formData) => {
         errors[`ScoresRequired`] = "Scores are required";
       } else {
         // Check if score is valid (between 0 and 30)
-        if (score.team1 < 0 || score.team1 > 30 || score.team2 < 0 || score.team2 > 30) {
+        if (score.team1 <= 0 || score.team1 > 30 || score.team2 <= 0 || score.team2 > 30) {
           errors[`ScoresInvalid`] = "Score must be between 0 and 30";
+        }
+        if (score.team1 === score.team2) {
+          errors[`ScoresInvalid`] = "NO TIE";
         }
       }
     });

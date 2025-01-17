@@ -113,6 +113,7 @@ export default function HomePage() {
       </nav>
 
       {/* Pass the user data to the Dashboard component */}
+      <h1 className="text-2xl font-bold text-gray-800">{user?.name}</h1>
       <UserRank score={user?.score} />
       <div className="mt-10 ml-4 flex items-center space-x-2">
         <button
