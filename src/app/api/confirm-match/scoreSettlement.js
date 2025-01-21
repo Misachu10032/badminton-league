@@ -1,4 +1,4 @@
-import { findWinners } from "@/app/utils/findWinners";
+import { findWinners } from "@/utils/findWinners";
 import { ObjectId } from "mongodb";
 
 export async function scoreSettlement(match, db) {

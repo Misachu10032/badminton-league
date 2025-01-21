@@ -1,5 +1,5 @@
 
-import { isValidEmail } from '../../utils/validateEmail';
+import { isValidEmail } from '../../../utils/validateEmail';
 import { connectToDatabase } from '../lib/mongodb'; // Helper to connect to MongoDB
 import { NextResponse } from 'next/server';
 

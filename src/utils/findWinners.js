@@ -1,4 +1,4 @@
-import { connectToDatabase } from '../../lib/mongodb'; // Helper function to connect to MongoDB
+import { connectToDatabase } from '../lib/mongodb'; // Helper function to connect to MongoDB
 import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
 

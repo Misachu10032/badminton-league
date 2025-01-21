@@ -1,4 +1,4 @@
-import { MAXIMUM_MATCHES_IN_A_DAY } from '@/app/enums/rulesEnums';
+import { MAXIMUM_MATCHES_IN_A_DAY } from '@/enums/rulesEnums';
 import { connectToDatabase } from '../lib/mongodb'; // Helper function to connect to MongoDB
 import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';

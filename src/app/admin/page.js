@@ -2,8 +2,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import RegistrationTable from "../components/Admin/RegistrationTable";
-import UserManagementTable from "../components/Admin/UserManagementTable";
+import RegistrationTable from "@/components/Admin/RegistrationTable";
+import UserManagementTable from "@/components/Admin/UserManagementTable";
+
+
 
 function Requests() {
   const [requests, setRequests] = useState([]);

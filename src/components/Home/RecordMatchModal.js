@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import PlayerSelectionTable from "./PlayerSelectionTable";
 import ScoreInput from "../common/SocreInput"; // Ensure the path is correct
-import { validateForm } from "../../utils/validateMatch"; // Ensure the path is correct
-import { canRecordNewMatch } from "@/app/utils/maxMatchesInADay";
+import { canRecordNewMatch } from "@/utils/maxMatchesInADay";
+import { validateForm } from "@/utils/validateMatch";
 
 export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,fetchUserData }) {
   const [isDoubleGame, setIsDoubleGame] = useState(true);

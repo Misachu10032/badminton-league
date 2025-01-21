@@ -1,7 +1,8 @@
-import { getRank } from "../../utils/getRanks"; // Ensure this path is correct
+
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { useState } from 'react';
 import PlayerRankModal from "./AllPlayerRankModal";
+import { getRank } from '@/utils/getRanks';
 // import PlayerRankModal from './PlayerRankModal'; // Import the modal component
 
 const UserRank = ({ score, players }) => {

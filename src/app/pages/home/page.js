@@ -1,11 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-
+import RecordMatchModal from "../components/Home/RecordMatchModal"; // Import the modal component
+import UserRank from "../components/Home/UserRank";
 import IconButton from "@mui/material/IconButton"; // Import IconButton from Material-UI
 import RefreshIcon from "@mui/icons-material/Refresh"; // Import Refresh Icon from Material-UI
-import UserRank from "@/components/Home/UserRank";
-import RecordMatchModal from "@/components/Home/RecordMatchModal";
 import Dashboard from "@/components/Home/DashBoard";
 
 export default function HomePage() {

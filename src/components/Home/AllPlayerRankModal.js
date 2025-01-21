@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Modal, Box, Typography, Button, Avatar } from '@mui/material';
-import { getRank } from '../../utils/getRanks'; // Ensure this path is correct
+import { getRank } from '@/utils/getRanks';
+
 
 const PlayerRankModal = ({ isOpen, onClose }) => {
   const [users, setUsers] = useState([]);

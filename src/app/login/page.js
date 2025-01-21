@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import RegisterRequestModal from '../components/Login/RegisterRequestModal';
+import RegisterRequestModal from '@/components/Login/RegisterRequestModal';
+
 
 export default function LoginPage() {
   const [error, setError] = useState('');
