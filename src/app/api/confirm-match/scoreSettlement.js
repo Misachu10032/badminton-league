@@ -1,3 +1,4 @@
+
 import { findWinners } from "@/utils/findWinners";
 import { ObjectId } from "mongodb";
 
@@ -24,7 +25,11 @@ export async function scoreSettlement(match, db) {
 
     const totalGames = match.scores.length;
     const decisiveMultiplier = scoreRatio > 2 ? 1.5 : 1;
-    let winnersCombinedRanking = winnerDocuments.reduce(
+    const winnersCombinedRanking = winnerDocuments.reduce(
+      (sum, doc) => sum + doc.score,
+      0
+    );
+    const losersCombinedRanking = loserDocuments.reduce(
       (sum, doc) => sum + doc.score,
       0
     );
@@ -90,10 +95,7 @@ export async function scoreSettlement(match, db) {
     }
 
     // Process losers
-    const losersCombinedRanking = loserDocuments.reduce(
-      (sum, doc) => sum + doc.score,
-      0
-    );
+
     const hardworkScore = scoreRatio < 1.5 ? 50 : 0;
     const rankingScore =
       winnersCombinedRanking - losersCombinedRanking > 1000 ? 50 : 0;
@@ -124,8 +126,8 @@ export async function scoreSettlement(match, db) {
         {
           $set: {
             score:
-              loserDoc.score +( hardworkScore + rankingScore) *
-              (Math.floor(totalGames / 2) + 1),
+              loserDoc.score +
+              (hardworkScore + rankingScore) * (Math.floor(totalGames / 2) + 1),
             teammate: loserDoc.teammate,
           },
         }
