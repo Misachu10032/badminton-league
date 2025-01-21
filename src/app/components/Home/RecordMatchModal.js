@@ -44,7 +44,7 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,
         const data = await response.json();
         setUsers(data);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.log("Error fetching users:", error);
       }
     };
 
@@ -165,10 +165,12 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,
         fetchUserData();
         onClose();
       } else {
-        console.error("Failed to submit match");
+        const errorData = await response.json();
+        console.log("Error submitting match:", errorData.error );
+        alert(errorData.error);  
       }
     } catch (error) {
-      console.error("Error submitting match:", error);
+      console.log("Error submitting match:", response.error);
     }
   };
 

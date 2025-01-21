@@ -1,5 +1,5 @@
+import { MAXIMUM_MATCHES_IN_A_DAY } from "../enums/rulesEnums";
 
-const MAXIMUM_MATCHES_IN_A_DAY =444;
 export const canRecordNewMatch  = (matches) => {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0); // Start of the day

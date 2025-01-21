@@ -1,54 +1,91 @@
-export function findWinners(match) {
-  const { team1, team2, scores } = match;
+import { connectToDatabase } from '../lib/mongodb'; // Helper function to connect to MongoDB
+import { ObjectId } from 'mongodb';
+import { NextResponse } from 'next/server';
 
-  let team1Wins = 0;
-  let team2Wins = 0;
-  let team1TotalScore = 0;
-  let team2TotalScore = 0;
+export async function POST(req) {
+  try {
+    const body = await req.json();
+    const {
+      isDoubleGame,
+      currentUser,
+      team1,
+      team2,
+      scores,
+      userIds,
+    } = body;
 
-  // Calculate total scores and wins for each team
-  scores.forEach((score) => {
-      team1TotalScore += score.team1;
-      team2TotalScore += score.team2;
-      // Determine which team won this score round
-      if (score.team1 > score.team2) {
-          team1Wins++;
-      } else if (score.team2 > score.team1) {
-          team2Wins++;
-      }
-      // Note: If scores are equal, it's a draw for this round, no win added
-  });
+    console.log('Creating match:', body);
 
-  // Determine the winning and losing teams based on the number of wins
-  let winners, losers, winningScore, losingScore;
-  if (team1Wins > team2Wins) {
-      winners = team1;
-      losers = team2;
-      winningScore = team1TotalScore;
-      losingScore = team2TotalScore;
-  } else {
-      winners = team2;
-      losers = team1;
-      winningScore = team2TotalScore;
-      losingScore = team1TotalScore;
+    // Validate the request
+    if (!currentUser || !team1 || !team2 || !scores || !userIds) {
+      console.log('Not all fields are present');
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    const { db } = await connectToDatabase();
+    const matchesCollection = db.collection('matches');
+    const usersCollection = db.collection('users');
+
+    // Get start and end of the current day
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    // Count matches recorded or involving the currentUser today
+    const matchCount = await matchesCollection.countDocuments({
+      $and: [
+        { createdAt: { $gte: startOfDay, $lt: endOfDay } },
+        { userIds: currentUser },
+      ],
+    });
+
+    if (matchCount >= 3) {
+      console.log(`User ${currentUser} has already recorded or been involved in 3 matches today.`);
+      return NextResponse.json(
+        { error: 'Player cannot record or be included in more than 3 matches per day.' },
+        { status: 400 }
+      );
+    }
+
+    // Create match document
+    const newMatch = {
+      isDoubleGame,
+      team1,
+      team2,
+      scores,
+      userIds,
+      status: 'Pending',
+      confirmedBy: [currentUser],
+      createdAt: new Date(),
+    };
+
+    const { insertedId } = await matchesCollection.insertOne(newMatch);
+
+    // Update user documents
+    const matchId = insertedId.toString();
+
+    // Update the current user's confirmed requests
+    await usersCollection.updateOne(
+      { _id: new ObjectId(currentUser) },
+      { $push: { 'requests.confirmed': matchId } }
+    );
+
+    // Update the other users' pending requests
+    const otherUsers = userIds.filter(userId => userId !== currentUser);
+    await usersCollection.updateMany(
+      { _id: { $in: otherUsers.map(id => new ObjectId(id)) } },
+      { $push: { 'requests.pending': matchId } }
+    );
+
+    return NextResponse.json({ message: 'Match created successfully', matchId });
+  } catch (error) {
+    console.error('Error creating match:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
-
-  // Extract user IDs from the players of winning and losing teams
-  const winnerIds = winners.map(player => player.userId);
-  const loserIds = losers.map(player => player.userId);
-
-  // Calculate the score ratio
-  const scoreRatio = losingScore !== 0 ? winningScore / losingScore : winningScore; // Avoid division by zero
-
-  // Log the winner and loser IDs for debugging or information purposes
-  console.log("Winners:", winnerIds);
-  console.log("Losers:", loserIds);
-  console.log("Score Ratio:", scoreRatio);
-
-  // Return the result object
-  return {
-      winners: winnerIds,
-      losers: loserIds,
-      scoreRatio: scoreRatio
-  };
 }
