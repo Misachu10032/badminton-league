@@ -19,15 +19,12 @@ export function findWinners(match) {
   let team2TotalScore = 0;
 
   // Calculate total scores and wins for each team
+  console.log("Scores:", scores);
   scores.forEach((score, index) => {
-    if (typeof score.team1 !== "number" || typeof score.team2 !== "number") {
-      throw new Error(
-        `Invalid score format at index ${index}. Scores must be numeric.`
-      );
-    }
+  
 
-    team1TotalScore += score.team1;
-    team2TotalScore += score.team2;
+    team1TotalScore += Number(score.team1) ;
+    team2TotalScore += Number(score.team2);
 
     // Determine round winner
     if (score.team1 > score.team2) {

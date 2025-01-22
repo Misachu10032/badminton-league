@@ -1,5 +1,6 @@
 import { WINNING_BASE_SCORE } from "@/enums/rulesEnums";
 import { findWinners } from "@/utils/findWinners";
+import { roundToNearestTen } from "@/utils/roundToNearestTen";
 import { sumUserScores } from "@/utils/sumUserScores";
 import { ObjectId } from "mongodb";
 
@@ -26,8 +27,8 @@ export async function scoreSettlement(match, db) {
 
     const totalNumberOfGames = match.scores.length;
     const decisiveMultiplier = scoreRatio > 2 ? 1.5 : 1;
-    const winnersCombinedRanking = sumUserScores(winnerDocuments)
-    const losersCombinedRanking = sumUserScores(loserDocuments)
+    const winnersCombinedRanking = sumUserScores(winnerDocuments);
+    const losersCombinedRanking = sumUserScores(loserDocuments);
 
     // Process winners
     for (const winnerDoc of winnerDocuments) {
@@ -51,8 +52,11 @@ export async function scoreSettlement(match, db) {
       }
 
       totalWins = Math.min(totalWins, 6); // Cap wins at 15
-      const addedScore =
-        (WINNING_BASE_SCORE - totalWins * 10) * numberOfWins * decisiveMultiplier;
+      const addedScore = roundToNearestTen(
+        (WINNING_BASE_SCORE - totalWins * 10) *
+          numberOfWins *
+          decisiveMultiplier
+      );
 
       if (winners.length === 2) {
         const otherWinnerId = winners.find(
@@ -92,9 +96,9 @@ export async function scoreSettlement(match, db) {
     const hardworkScore = scoreRatio < 1.5 ? 20 : 0;
     const rankingScore =
       winnersCombinedRanking - losersCombinedRanking > 1000 ? 20 : 0;
-    const consolationPoints =      (hardworkScore + rankingScore) * totalNumberOfGames,;
+    const consolationPoints =
+      (hardworkScore + rankingScore) * totalNumberOfGames;
     for (const loserDoc of loserDocuments) {
- 
       if (losers.length === 2) {
         const otherLoserId = losers.find(
           (id) => id !== loserDoc._id.toString()
@@ -119,9 +123,8 @@ export async function scoreSettlement(match, db) {
         { _id: loserDoc._id },
         {
           $set: {
-            score:
-              loserDoc.score +consolationPoints,
-         
+            score: loserDoc.score + consolationPoints,
+
             teammate: loserDoc.teammate,
           },
         }
