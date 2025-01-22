@@ -1,54 +1,77 @@
 export function findWinners(match) {
   const { team1, team2, scores } = match;
 
+  if (
+    !team1 ||
+    !team2 ||
+    !scores ||
+    !Array.isArray(scores) ||
+    scores.length === 0
+  ) {
+    throw new Error(
+      "Invalid match data: teams and scores must be provided and scores must be a non-empty array."
+    );
+  }
+
   let team1Wins = 0;
   let team2Wins = 0;
   let team1TotalScore = 0;
   let team2TotalScore = 0;
 
   // Calculate total scores and wins for each team
-  scores.forEach((score) => {
-      team1TotalScore += score.team1;
-      team2TotalScore += score.team2;
-      // Determine which team won this score round
-      if (score.team1 > score.team2) {
-          team1Wins++;
-      } else if (score.team2 > score.team1) {
-          team2Wins++;
-      }
-      // Note: If scores are equal, it's a draw for this round, no win added
+  scores.forEach((score, index) => {
+    if (typeof score.team1 !== "number" || typeof score.team2 !== "number") {
+      throw new Error(
+        `Invalid score format at index ${index}. Scores must be numeric.`
+      );
+    }
+
+    team1TotalScore += score.team1;
+    team2TotalScore += score.team2;
+
+    // Determine round winner
+    if (score.team1 > score.team2) {
+      team1Wins++;
+    } else if (score.team2 > score.team1) {
+      team2Wins++;
+    }
+    // If scores are equal, no wins are added for this round (treated as a draw)
   });
 
-  // Determine the winning and losing teams based on the number of wins
-  let winners, losers, winningScore, losingScore;
-  if (team1Wins > team2Wins) {
-      winners = team1;
-      losers = team2;
-      winningScore = team1TotalScore;
-      losingScore = team2TotalScore;
-  } else {
-      winners = team2;
-      losers = team1;
-      winningScore = team2TotalScore;
-      losingScore = team1TotalScore;
+  // Handle a draw scenario
+  if (team1Wins === team2Wins) {
+    return {
+      isDraw: true,
+    };
   }
 
-  // Extract user IDs from the players of winning and losing teams
-  const winnerIds = winners.map(player => player.userId);
-  const loserIds = losers.map(player => player.userId);
+  // Determine the winner and loser teams
+  const isTeam1Winner = team1Wins > team2Wins;
+  const winners = isTeam1Winner ? team1 : team2;
+  const losers = isTeam1Winner ? team2 : team1;
+  const winningScore = isTeam1Winner ? team1TotalScore : team2TotalScore;
+  const losingScore = isTeam1Winner ? team2TotalScore : team1TotalScore;
 
-  // Calculate the score ratio
-  const scoreRatio = losingScore !== 0 ? winningScore / losingScore : winningScore; // Avoid division by zero
+  // Extract user IDs for winners and losers
+  const winnerIds = winners.map((player) => player.userId);
+  const loserIds = losers.map((player) => player.userId);
 
-  // Log the winner and loser IDs for debugging or information purposes
-  console.log("Winners:", winnerIds);
-  console.log("Losers:", loserIds);
-  console.log("Score Ratio:", scoreRatio);
+  // Calculate score ratio
+  const scoreRatio =
+    losingScore !== 0 ? winningScore / losingScore : winningScore; // Avoid division by zero
 
-  // Return the result object
+  console.log("Match Results:", {
+    winnerIds,
+    loserIds,
+    scoreRatio,
+    numberOfWins: Math.max(team1Wins, team2Wins),
+  });
+
   return {
-      winners: winnerIds,
-      losers: loserIds,
-      scoreRatio: scoreRatio
+    winners: winnerIds,
+    losers: loserIds,
+    scoreRatio: scoreRatio,
+    numberOfWins: Math.max(team1Wins, team2Wins),
+    isDraw: false,
   };
 }

@@ -1,9 +1,10 @@
-
+import { WINNING_BASE_SCORE } from "@/enums/rulesEnums";
 import { findWinners } from "@/utils/findWinners";
+import { sumUserScores } from "@/utils/sumUserScores";
 import { ObjectId } from "mongodb";
 
 export async function scoreSettlement(match, db) {
-  const { winners, losers, scoreRatio } = findWinners(match);
+  const { winners, losers, scoreRatio, numberOfWins } = findWinners(match);
 
   console.log("ScoreSeetlement: winner", winners);
   console.log("ScoreSeetlement: losers", losers);
@@ -23,16 +24,10 @@ export async function scoreSettlement(match, db) {
         .toArray(),
     ]);
 
-    const totalGames = match.scores.length;
+    const totalNumberOfGames = match.scores.length;
     const decisiveMultiplier = scoreRatio > 2 ? 1.5 : 1;
-    const winnersCombinedRanking = winnerDocuments.reduce(
-      (sum, doc) => sum + doc.score,
-      0
-    );
-    const losersCombinedRanking = loserDocuments.reduce(
-      (sum, doc) => sum + doc.score,
-      0
-    );
+    const winnersCombinedRanking = sumUserScores(winnerDocuments)
+    const losersCombinedRanking = sumUserScores(loserDocuments)
 
     // Process winners
     for (const winnerDoc of winnerDocuments) {
@@ -55,11 +50,9 @@ export async function scoreSettlement(match, db) {
         }
       }
 
-      totalWins = Math.min(totalWins, 15); // Cap wins at 15
+      totalWins = Math.min(totalWins, 6); // Cap wins at 15
       const addedScore =
-        (200 - totalWins * 10) *
-        (Math.floor(totalGames / 2) + 1) *
-        decisiveMultiplier;
+        (WINNING_BASE_SCORE - totalWins * 10) * numberOfWins * decisiveMultiplier;
 
       if (winners.length === 2) {
         const otherWinnerId = winners.find(
@@ -96,11 +89,12 @@ export async function scoreSettlement(match, db) {
 
     // Process losers
 
-    const hardworkScore = scoreRatio < 1.5 ? 50 : 0;
+    const hardworkScore = scoreRatio < 1.5 ? 20 : 0;
     const rankingScore =
-      winnersCombinedRanking - losersCombinedRanking > 1000 ? 50 : 0;
-
+      winnersCombinedRanking - losersCombinedRanking > 1000 ? 20 : 0;
+    const consolationPoints =      (hardworkScore + rankingScore) * totalNumberOfGames,;
     for (const loserDoc of loserDocuments) {
+ 
       if (losers.length === 2) {
         const otherLoserId = losers.find(
           (id) => id !== loserDoc._id.toString()
@@ -126,8 +120,8 @@ export async function scoreSettlement(match, db) {
         {
           $set: {
             score:
-              loserDoc.score +
-              (hardworkScore + rankingScore) * (Math.floor(totalGames / 2) + 1),
+              loserDoc.score +consolationPoints,
+         
             teammate: loserDoc.teammate,
           },
         }
