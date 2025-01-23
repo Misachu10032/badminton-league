@@ -64,7 +64,7 @@ export async function POST(req) {
       if (!allConfirmed) {
         return new Response(
           JSON.stringify({
-            message: "Match confirmation updated. Waiting for others.",
+            message: "Match confirmation updated. Waiting for other players to confirm.",
           }),
           { status: 200 }
         );
@@ -81,7 +81,7 @@ export async function POST(req) {
 
       return new Response(
         JSON.stringify({
-          message: "Match confirmed, scores updated, and requests updated.",
+          message: "All players confirmed, Please refresh to see updated scores",
         }),
         { status: 200 }
       );

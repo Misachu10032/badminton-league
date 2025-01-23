@@ -7,6 +7,8 @@ import { ObjectId } from "mongodb";
 export async function scoreSettlement(match, db) {
   const { winners, losers, scoreRatio, numberOfWins } = findWinners(match);
 
+  const scoreChanges = [];
+
   console.log("ScoreSeetlement: winner", winners);
   console.log("ScoreSeetlement: losers", losers);
   console.log("ScoreSeetlement: scoreRatio", scoreRatio);
@@ -47,7 +49,6 @@ export async function scoreSettlement(match, db) {
             opponentId: new ObjectId(loserId),
             wins: 1,
           });
-          totalWins += 1;
         }
       }
 
@@ -78,6 +79,10 @@ export async function scoreSettlement(match, db) {
           }
         }
       }
+      scoreChanges.push({
+        userId: winnerDoc._id.toString(),
+        change: addedScore,
+      });
       console.log("ScoreSettlement: addedScore", addedScore);
       await db.collection("users").updateOne(
         { _id: winnerDoc._id },
@@ -118,7 +123,10 @@ export async function scoreSettlement(match, db) {
           }
         }
       }
-
+      scoreChanges.push({
+        userId: loserDoc._id.toString(),
+        change: consolationPoints,
+      });
       await db.collection("users").updateOne(
         { _id: loserDoc._id },
         {
@@ -126,6 +134,15 @@ export async function scoreSettlement(match, db) {
             score: loserDoc.score + consolationPoints,
 
             teammate: loserDoc.teammate,
+          },
+        }
+      );
+
+      await db.collection("matches").updateOne(
+        { _id: new ObjectId(match._id) }, // Match document identified by its _id
+        {
+          $set: {
+            scoreChanges: scoreChanges, // Add the scoreChanges array to the match document
           },
         }
       );

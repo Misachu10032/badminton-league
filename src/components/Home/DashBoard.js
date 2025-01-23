@@ -5,9 +5,10 @@ import { useEffect, useState, useMemo } from "react";
 import DoubleCheckModal from "../common/DoubleCheckModal";
 import { formatDate } from "@/utils/formatDate";
 
+
 const MATCHES_PER_PAGE = 10; // Matches per page
 
-export default function Dashboard({ user, matches, setMatches }) {
+export default function Dashboard({ user, matches, setMatches,setUser }) {
   const [isPendingCollapsed, setIsPendingCollapsed] = useState(false);
   const [isConfirmedCollapsed, setIsConfirmedCollapsed] = useState(true);
   const [pendingPage, setPendingPage] = useState(1);
@@ -32,12 +33,14 @@ export default function Dashboard({ user, matches, setMatches }) {
 
       if (res.ok) {
         const data = await res.json();
-        alert("Match confirmed successfully!");
-
-        // Refresh matches
-        setMatches((prevMatches) => ({
-          pending: prevMatches.pending.filter((match) => match._id !== matchId),
-          confirmed: [...prevMatches.confirmed, data.updatedMatch],
+        alert(data.message);
+      
+        setUser((prevUser) => ({
+          ...prevUser,
+          requests: {
+            ...prevUser.requests,
+            confirmed: [...prevUser.requests.confirmed, matchId], // Add the matchId to confirmed
+          },
         }));
       } else {
         const error = await res.json();

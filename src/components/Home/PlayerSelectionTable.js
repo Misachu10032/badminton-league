@@ -11,7 +11,7 @@ export default function PlayerSelectionTable({ users, onClose, onSelect }) {
       user.name.toLowerCase().includes(searchQuery.toLowerCase())
     ), [users, searchQuery]);
 
-  const gridTemplate = isMobile ? 'repeat(1, 1fr)' : 'repeat(5, 1fr)';
+  const gridTemplate = isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)';
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-8">

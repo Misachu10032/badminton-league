@@ -7,6 +7,7 @@ import RefreshIcon from "@mui/icons-material/Refresh"; // Import Refresh Icon fr
 import UserRank from "@/components/Home/UserRank";
 import RecordMatchModal from "@/components/Home/RecordMatchModal";
 import Dashboard from "@/components/Home/DashBoard";
+import { fetchAndSortMatches } from "../../utils/helpers/fetchmatches";
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
@@ -33,36 +34,7 @@ export default function HomePage() {
       const userData = await res.json();
       setUser(userData);
       console.log("userData", userData.requests);
-
-      // Fetch matches based on user requests
-      const matchRes = await fetch("/api/get-matches", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          matchesIds: [
-            ...userData.requests.confirmed,
-            ...userData.requests.pending,
-          ],
-        }),
-      });
-
-      if (!matchRes.ok) {
-        throw new Error("Failed to fetch matches");
-      }
-      const matchData = await matchRes.json();
-      // Sort matches by `createdAt` in descending order
-      const sortedPending = matchData.matches
-        .filter((m) => m.status === "Pending")
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      const sortedConfirmed = matchData.matches
-        .filter((m) => m.status === "Confirmed")
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-      // Update state
-      setMatches({
-        pending: sortedPending,
-        confirmed: sortedConfirmed,
-      });
+      fetchAndSortMatches(userData, setMatches);
     } catch (error) {
       console.error("Error fetching user or match data:", error.message);
       alert("An error occurred while fetching data. Please try again.");
@@ -95,12 +67,12 @@ export default function HomePage() {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-800">Badminton League</h1>
           <div className="flex space-x-4">
-          <button
-                onClick={() => (window.location.href = "/rules")}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
-              >
-               Rules
-              </button>
+            <button
+              onClick={() => (window.location.href = "/rules")}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+            >
+              Rules
+            </button>
             {user?.role === "Admin" && (
               <button
                 onClick={() => (window.location.href = "/admin")}
@@ -138,7 +110,7 @@ export default function HomePage() {
         </IconButton>
       </div>
 
-      <Dashboard user={user} matches={matches} setMatches={setMatches} />
+      <Dashboard user={user} matches={matches} setMatches={setMatches} setUser={setUser}  />
 
       {/* Popup Modal */}
       {isModalOpen && (
