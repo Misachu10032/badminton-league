@@ -32,11 +32,13 @@ export async function POST(req) {
     // Remove the match ID from each player's requests
     const userUpdateResult = await usersCollection.updateMany(
       { _id: { $in: match.userIds.map(id => new ObjectId(id)) } },
-      { $pull: { 'requests.pending': match._id, 'requests.confirmed': match._id } } // Remove from both confirmed and pending
+      { $pull: { 'requests.pending': matchId, 'requests.confirmed': matchId } } // Remove from both confirmed and pending
     );
 
+    console.log('userUpdateResult:', userUpdateResult);
+
     // Delete the match document
-    const matchDeleteResult = await matchesCollection.deleteOne({ _id: new ObjectId(match._id) });
+    const matchDeleteResult = await matchesCollection.deleteOne({ _id: match._id });
 
     if (matchDeleteResult.deletedCount === 0) {
       return NextResponse.json(

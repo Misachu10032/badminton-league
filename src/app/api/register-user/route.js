@@ -69,6 +69,8 @@ export async function POST(req) {
         pending: [],
         confirmed: [],
       },
+      opponents: [],
+      teammate:[],
       createdAt: new Date(), // Optionally include a timestamp
     });
 
