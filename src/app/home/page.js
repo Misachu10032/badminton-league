@@ -8,13 +8,16 @@ import UserRank from "@/components/Home/UserRank";
 import RecordMatchModal from "@/components/Home/RecordMatchModal";
 import Dashboard from "@/components/Home/DashBoard";
 import { fetchAndSortMatches } from "../../utils/helpers/fetchmatches";
+import { triggerNotification } from "../../utils/eventBus";
+
+
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-
   const [matches, setMatches] = useState({ pending: [], confirmed: [] });
+
 
   const fetchUserData = async () => {
     try {
@@ -54,6 +57,13 @@ export default function HomePage() {
     alert("You have been logged out!");
     // Redirect to login page or refresh the page
     window.location.href = "/login";
+  };
+
+
+  
+  const test = () => {
+      triggerNotification('This is a custom notification!');
+
   };
 
   if (isLoading) {
@@ -108,6 +118,17 @@ export default function HomePage() {
         >
           <RefreshIcon className="text-blue-500 h-6 w-6" />
         </IconButton>
+      </div>
+
+
+      <div className="mt-10 ml-4 flex items-center space-x-2">
+        <button
+          onClick={test}
+          className="bg-blue-600 text-white p-4 rounded-lg shadow-lg hover:bg-blue-700"
+        >
+          + test
+        </button>
+
       </div>
 
       <Dashboard user={user} matches={matches} setMatches={setMatches} setUser={setUser}  />
