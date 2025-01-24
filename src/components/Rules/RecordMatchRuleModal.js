@@ -83,7 +83,7 @@ export default function RecordMatchRulesModal({ isOpen, onClose, language }) {
             <li>
               {language === "en"
                 ? "Once all players confirm the game, the rank points will be added to individual players. The points detail can be found in the Confirmed Games section."
-                : "当所有玩家都confirm后，排名积分将结算，积分详情可在“confirmed matches”查看。"}
+                : "当所有玩家都confirm后，排名积分将结算，积分详情可在“Confirmed Matches”查看。"}
             </li>
             <li>
               {language === "en"
