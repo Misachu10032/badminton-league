@@ -8,19 +8,19 @@ import UserRank from "@/components/Home/UserRank";
 import RecordMatchModal from "@/components/Home/RecordMatchModal";
 import Dashboard from "@/components/Home/DashBoard";
 import { fetchAndSortMatches } from "../../utils/helpers/fetchmatches";
+import { triggerNotification } from "../../utils/eventBus";
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-
   const [matches, setMatches] = useState({ pending: [], confirmed: [] });
 
   const fetchUserData = async () => {
     try {
       const userId = Cookies.get("userID");
       if (!userId) {
-        alert("User not logged in");
+        triggerNotification("User not logged in");
         return;
       }
 
@@ -33,11 +33,9 @@ export default function HomePage() {
       }
       const userData = await res.json();
       setUser(userData);
-      console.log("userData", userData.requests);
       fetchAndSortMatches(userData, setMatches);
     } catch (error) {
-      console.error("Error fetching user or match data:", error.message);
-      alert("An error occurred while fetching data. Please try again.");
+      triggerNotification("Failed to get the user info", "error");
     } finally {
       setIsLoading(false);
     }
@@ -48,11 +46,8 @@ export default function HomePage() {
   }, []);
 
   const handleLogout = () => {
-    // Remove cookies
     Cookies.remove("userID");
     Cookies.remove("token");
-    alert("You have been logged out!");
-    // Redirect to login page or refresh the page
     window.location.href = "/login";
   };
 
@@ -110,7 +105,12 @@ export default function HomePage() {
         </IconButton>
       </div>
 
-      <Dashboard user={user} matches={matches} setMatches={setMatches} setUser={setUser}  />
+      <Dashboard
+        user={user}
+        matches={matches}
+        setMatches={setMatches}
+        setUser={setUser}
+      />
 
       {/* Popup Modal */}
       {isModalOpen && (

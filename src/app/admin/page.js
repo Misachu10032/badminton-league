@@ -70,7 +70,6 @@ function Requests() {
   const handleLogout = () => {
     Cookies.remove("userID");
     Cookies.remove("token");
-    alert("You have been logged out!");
     window.location.href = "/login";
   };
 

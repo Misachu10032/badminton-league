@@ -1,4 +1,3 @@
-import React from 'react';
 import { Modal } from '@mui/material';
 
 const DoubleCheckModal = ({  title, message, isOpen, onClose, onConfirm, }) => {

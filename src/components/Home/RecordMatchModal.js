@@ -10,8 +10,15 @@ import PlayerSelectionTable from "./PlayerSelectionTable";
 import ScoreInput from "../common/SocreInput"; // Ensure the path is correct
 import { canRecordNewMatch } from "@/utils/maxMatchesInADay";
 import { validateForm } from "@/utils/validateMatch";
+import { triggerNotification } from "../../utils/eventBus";
 
-export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,fetchUserData }) {
+export default function RecordMatchModal({
+  isOpen,
+  onClose,
+  currentUser,
+  matches,
+  fetchUserData,
+}) {
   const [isDoubleGame, setIsDoubleGame] = useState(true);
   const [users, setUsers] = useState([]);
   const [showUserSelection, setShowUserSelection] = useState(false);
@@ -120,7 +127,10 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,
     e.preventDefault();
 
     if (!canRecordNewMatch(matches)) {
-      alert("You have already recorded the maximum number of matches today.");
+      triggerNotification(
+        "You have already recorded the maximum number of matches today.",
+        "warning"
+      );
       return;
     }
 
@@ -141,8 +151,8 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,
     }));
 
     const userIds = [
-      ...team1.map(player => player.userId),
-      ...team2.map(player => player.userId)
+      ...team1.map((player) => player.userId),
+      ...team2.map((player) => player.userId),
     ];
 
     try {
@@ -157,20 +167,22 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,
           team1,
           team2,
           scores: formData.scores,
-          userIds
+          userIds,
         }),
       });
 
       if (response.ok) {
         fetchUserData();
+        triggerNotification(
+          "Match recorded successfully!Please wait for the other player to confirm."
+        );
         onClose();
       } else {
         const errorData = await response.json();
-        console.log("Error submitting match:", errorData.error );
-        alert(errorData.error);  
+        triggerNotification("Error submitting match: " + errorData.error);
       }
     } catch (error) {
-      console.log("Error submitting match:", response.error);
+      triggerNotification("Error submitting match: " + errorData.error);
     }
   };
 
@@ -283,7 +295,9 @@ export default function RecordMatchModal({ isOpen, onClose, currentUser,matches,
                       onChange={(e) => handleScoreChange(e, index, "team1")}
                       className="w-12 h-6 border-gray-200 rounded-lg text-center"
                     />
-                    <span className="text-3xl font-medium text-gray-700">:</span>
+                    <span className="text-3xl font-medium text-gray-700">
+                      :
+                    </span>
                     <ScoreInput
                       value={score.team2}
                       onChange={(e) => handleScoreChange(e, index, "team2")}
