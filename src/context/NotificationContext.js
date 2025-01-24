@@ -5,12 +5,14 @@ import { onNotification } from '../utils/eventBus';
 
 const NotificationProvider = ({ children }) => {
   const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState('success');
 
   useEffect(() => {
     // Listen for notification events
-    const handleNotification = (msg) => {
-      setMessage(msg);
-    };
+    const handleNotification = ({ message, severity }) => {
+        setMessage(message);
+        setSeverity(severity); // Set the severity based on the event
+      };
 
     onNotification(handleNotification);
 
@@ -26,11 +28,11 @@ const NotificationProvider = ({ children }) => {
       {message && (
         <Snackbar
           open
-          autoHideDuration={2000}
+          autoHideDuration={3000}
           onClose={() => setMessage('')}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
-          <Alert onClose={() => setMessage('')} severity="success" sx={{ width: '100%' }}>
+          <Alert onClose={() => setMessage('')} severity={severity} sx={{ width: '100%' }}>
             {message}
           </Alert>
         </Snackbar>

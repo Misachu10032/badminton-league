@@ -23,7 +23,7 @@ export default function HomePage() {
     try {
       const userId = Cookies.get("userID");
       if (!userId) {
-        alert("User not logged in");
+        triggerNotification("User not logged in");
         return;
       }
 
@@ -62,7 +62,7 @@ export default function HomePage() {
 
   
   const test = () => {
-      triggerNotification('This is a custom notification!');
+      triggerNotification('This is a custom notification!', 'info');
 
   };
 
