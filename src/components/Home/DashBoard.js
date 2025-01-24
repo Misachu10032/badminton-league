@@ -4,11 +4,11 @@ import { useEffect, useState, useMemo } from "react";
 
 import DoubleCheckModal from "../common/DoubleCheckModal";
 import { formatDate } from "@/utils/formatDate";
-
+import { triggerNotification } from "../../utils/eventBus";
 
 const MATCHES_PER_PAGE = 10; // Matches per page
 
-export default function Dashboard({ user, matches, setMatches,setUser }) {
+export default function Dashboard({ user, matches, setMatches, setUser }) {
   const [isPendingCollapsed, setIsPendingCollapsed] = useState(false);
   const [isConfirmedCollapsed, setIsConfirmedCollapsed] = useState(true);
   const [pendingPage, setPendingPage] = useState(1);
@@ -33,8 +33,7 @@ export default function Dashboard({ user, matches, setMatches,setUser }) {
 
       if (res.ok) {
         const data = await res.json();
-        alert(data.message);
-      
+        triggerNotification(data.message);
         setUser((prevUser) => ({
           ...prevUser,
           requests: {
@@ -44,12 +43,13 @@ export default function Dashboard({ user, matches, setMatches,setUser }) {
         }));
       } else {
         const error = await res.json();
-        console.error("Error confirming match:", error);
-        alert(error.message || "Failed to confirm match");
+        triggerNotification(
+          error.message || "Failed to confirm match",
+          "error"
+        );
       }
     } catch (error) {
-      console.error("Error confirming match:", error);
-      alert("Failed to confirm match. Please try again.");
+      triggerNotification(error.message || "Failed to confirm match", "error");
     }
   };
 
@@ -67,16 +67,16 @@ export default function Dashboard({ user, matches, setMatches,setUser }) {
       });
 
       if (res.ok) {
-        alert("Match request declined successfully!");
+        triggerNotification(
+          "Match request declined successfully.Please also let the other player know",
+          "info"
+        );
         // Refresh matches or update state as needed
       } else {
-        const error = await res.json();
-        console.error("Error declining match:", error);
-        alert(error.message || "Failed to decline match");
+        triggerNotification("Failed to decline match", "error");
       }
     } catch (error) {
-      console.error("Error declining match:", error);
-      alert("Failed to decline match. Please try again.");
+      triggerNotification("Failed to decline match", "error");
     } finally {
       setMatches((prevMatches) => ({
         pending: prevMatches.pending.filter(

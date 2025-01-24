@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { triggerNotification } from "../../utils/eventBus";
 
 const RegisterPage = () => {
   const [queryParams, setQueryParams] = useState({});
@@ -83,7 +84,7 @@ const RegisterPage = () => {
       });
 
       if (res.ok) {
-        alert(
+        triggerNotification(
           "Registration successful.\n Please check out the rules page before login with your email."
         );
       } else {

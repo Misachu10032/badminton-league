@@ -28,9 +28,10 @@ const NotificationProvider = ({ children }) => {
       {message && (
         <Snackbar
           open
-          autoHideDuration={3000}
+          autoHideDuration={5000}
           onClose={() => setMessage('')}
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          className="mt-10" 
         >
           <Alert onClose={() => setMessage('')} severity={severity} sx={{ width: '100%' }}>
             {message}
