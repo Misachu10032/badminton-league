@@ -3,6 +3,7 @@ import { findWinners } from "@/utils/findWinners";
 import { roundToNearestTen } from "@/utils/roundToNearestTen";
 import { sumUserScores } from "@/utils/sumUserScores";
 import { ObjectId } from "mongodb";
+import { updateMatchRecord } from "./updateMatchRecord";
 
 export async function scoreSettlement(match, db) {
   const { winners, losers, scoreRatio, numberOfWins } = findWinners(match);
@@ -137,16 +138,9 @@ export async function scoreSettlement(match, db) {
           },
         }
       );
-
-      await db.collection("matches").updateOne(
-        { _id: new ObjectId(match._id) }, // Match document identified by its _id
-        {
-          $set: {
-            scoreChanges: scoreChanges, // Add the scoreChanges array to the match document
-          },
-        }
-      );
     }
+    console.log(scoreChanges,"sadsadasdasdasd")
+    await updateMatchRecord(match, scoreChanges, db);
   } catch (error) {
     console.error("Score Settlement Error", error);
     throw new Error("Score Settlement Error");

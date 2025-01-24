@@ -1,4 +1,3 @@
-
 import { connectToDatabase } from "../lib/mongodb";
 
 import { ObjectId } from "mongodb";
@@ -22,13 +21,15 @@ export async function POST(req) {
     }
 
     // Convert IDs to ObjectId
- 
+
     try {
       const matchObjectId = new ObjectId(matchId);
       const userObjectId = new ObjectId(userId); // Moved userObjectId declaration here
 
       // Fetch the match document
-      let match = await db.collection("matches").findOne({ _id: matchObjectId });
+      let match = await db
+        .collection("matches")
+        .findOne({ _id: matchObjectId });
       console.log("match", match);
 
       if (!match) {
@@ -40,10 +41,12 @@ export async function POST(req) {
 
       // Add userId to the confirmedBy array if not already included
       if (!match.confirmedBy.includes(userId)) {
-        await db.collection("matches").updateOne(
-          { _id: matchObjectId },
-          { $addToSet: { confirmedBy: userId } }
-        );
+        await db
+          .collection("matches")
+          .updateOne(
+            { _id: matchObjectId },
+            { $addToSet: { confirmedBy: userId } }
+          );
       }
       match.confirmedBy = [...match.confirmedBy, userId];
       // Update the user's requests
@@ -57,45 +60,44 @@ export async function POST(req) {
       console.log("updateResult", updateResult);
 
       // Check if all users have confirmed
-      const allConfirmed = match.userIds.every((id) => match.confirmedBy.includes(id));
+      const allConfirmed = match.userIds.every((id) =>
+        match.confirmedBy.includes(id)
+      );
 
       console.log("allConfirmed", allConfirmed);
 
       if (!allConfirmed) {
         return new Response(
           JSON.stringify({
-            message: "Match confirmation updated. Waiting for other players to confirm.",
+            message:
+              "Match confirmation updated. Waiting for other players to confirm.",
           }),
           { status: 200 }
         );
       }
-      await db.collection("matches").updateOne(
-        { _id: matchObjectId },
-        {// Adds userId to the 'confirmedBy' array if not already present
-          $set: { status: "Confirmed" } // Updates the status field to "Confirmed"
-        }
-      );
-      // Determine the winners and update scores
 
       await scoreSettlement(match, db);
 
       return new Response(
         JSON.stringify({
-          message: "All players confirmed, Please refresh to see updated scores",
+          message:
+            "All players confirmed, Please refresh to see updated scores",
         }),
         { status: 200 }
       );
     } catch (error) {
       console.error("Invalid ID format:", error);
-      return new Response(
-        JSON.stringify({ error: "Invalid ID format" }),
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ error: "Invalid ID format" }), {
+        status: 400,
+      });
     }
   } catch (error) {
     console.error("Error confirming match:", error);
     return new Response(
-      JSON.stringify({ error: "Internal server error", details: error.message }),
+      JSON.stringify({
+        error: "Internal server error",
+        details: error.message,
+      }),
       { status: 500 }
     );
   }
