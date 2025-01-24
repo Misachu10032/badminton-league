@@ -14,7 +14,7 @@ const UserRank = ({ score, players }) => {
       <div className="flex-grow text-center">
         <h1 className="text-2xl font-bold text-gray-800">Your Rank</h1>
         <p className="text-3xl text-blue-600 mt-2">{rank}</p>
-        <p className="text-sm text-gray-500 mt-1">Score: {score}</p>
+        <p className="text-sm text-gray-500 mt-1">Rank Score: {score}</p>
       </div>
       <BarChartIcon 
         className="cursor-pointer text-blue-600 hover:text-blue-800 ml-4"

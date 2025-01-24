@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 
-const RulesPage = () => {
-  const [language, setLanguage] = useState("zh"); // Default language is English
+import RankScoreRuleModal from "../../components/Rules/RankScoreRuleModal";
+import Modal from "react-modal";
+import RecordMatchRulesModal from "../../components/Rules/RecordMatchRuleModal";
 
+const RulesPage = () => {
+  const [language, setLanguage] = useState("zh"); // Default language is Chinese
+  const [isRankScoreModalOpen, setRankScoreModalOpen] = useState(false);
+  const [isRecordMatchModalOpen, setRecordMatchModalOpen] = useState(false);
   const toggleLanguage = () => {
     setLanguage((prevLang) => (prevLang === "en" ? "zh" : "en"));
   };
@@ -13,9 +18,25 @@ const RulesPage = () => {
     window.location.href = "/login";
   };
 
+  const openRankScoreModal = () => {
+    setRankScoreModalOpen(true);
+  };
+
+  const closeRankScoreModal = () => {
+    setRankScoreModalOpen(false);
+  };
+
+  const openRecordMatchModal = () => {
+    setRecordMatchModalOpen(true);
+  };
+
+  const closeRecordMatchModal = () => {
+    setRecordMatchModalOpen(false);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full bg-white rounded-xl shadow-2xl p-8 space-y-6">
+    <div className="h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full sm:w-full lg:w-1/2 bg-white rounded-xl shadow-2xl p-8 space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-extrabold text-indigo-600">
             {language === "en" ? "Rules" : "规则"}
@@ -30,81 +51,24 @@ const RulesPage = () => {
 
         <div className="text-gray-700 space-y-5">
           <p className="text-lg font-medium text-center">
-            {language === "en" ? "I'm working on it" : "我还在肝"}
+            {language === "en" ? "I'm working on it" : "我还在肝这个页面"}
           </p>
-
-          <h2 className="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2">
-            {language === "en" ? "Winning Team" : "获胜队伍"}
-          </h2>
-          <p className="text-lg">
-            {language === "en" ? "Score calculation:" : "算分规则"}
+          <p className="text-lg font-medium text-center">
+            {language === "en" ? "I'm working on it" : "这是个做出来玩玩的APP,冲排名得称号。大家开心就好"}
           </p>
-          <p className="bg-gray-50 border-l-4 border-indigo-500 px-4 py-2 rounded-md">
-            {language === "en"
-              ? "(200 - gamesWonAgainstTheLosingTeam * 10) * decisiveMultiplier * numberOfGamesPlayed"
-              : "（基础分-杀熟分）x胜负系数x赢的局数"}
-          </p>
-
-          <div className="bg-gray-50 border-l-4 border-indigo-500 px-4 py-2 rounded-md space-y-3">
-            <p className="text-base">
-              {language === "en" ? "Details:" : "详细规则："}
-            </p>
-            <ul className="list-disc pl-5">
-              <li>
-                {language === "en"
-                  ? "gamesWonAgainstTheLosingTeam is calculated for each player."
-                  : "基础分100"}
-              </li>
-              <li>
-                {language === "en"
-                  ? "Example: If A and B win against C and D, A's value includes all wins against C and D."
-                  : "杀熟分：赢过对手的次数。"}
-              </li>
-              <li>
-                {language === "en"
-                  ? "The decisiveMultiplier increases to 1.5 if the winning team's score is more than twice the losing team's, otherwise it's 1."
-                  : "（基础分-杀熟分）的下线是50"}
-              </li>
-              <li>
-                {language === "en"
-                  ? "numberOfGamesPlayed: 1 for best of 1, 2 for best of 3, 3 for best of 5."
-                  : "胜负系数： 若胜方分数是负方的两倍以上，胜负系数为1.5，否则为1。"}
-              </li>
-            </ul>
-          </div>
-
-          <h2 className="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 mt-6 pb-2">
-            {language === "en" ? "Losing Team" : "失败队伍"}
-          </h2>
-          <p className="text-lg">
-            {language === "en" ? "Score calculation:" : "算分规则："}
-          </p>
-          <p className="bg-gray-50 border-l-4 border-red-500 px-4 py-2 rounded-md">
-            {language === "en"
-              ? "(hardworkScore + rankingDifferenceScore) * numberOfGamesPlayed"
-              : "（拼搏分+挑战分）x比赛局数"}
-          </p>
-          <div className="bg-gray-50 border-l-4 border-red-500 px-4 py-2 rounded-md space-y-3">
-            <p className="text-base">
-              {language === "en" ? "Details:" : "详细规则："}
-            </p>
-            <ul className="list-disc pl-5">
-              <li>
-                {language === "en"
-                  ? "hardworkScore: 50 if the total score ratio is less than 1.5, otherwise 0."
-                  : "拼搏分：总比分差低于1.5时为20分，否则为0。"}
-              </li>
-              <li>
-                {language === "en"
-                  ? "rankingDifferenceScore: 50 if the difference between combined scores of teams exceeds 1000."
-                  : "挑战分：队伍排名分数总和差超过1000时得20分。"}
-              </li>
-              <li>
-                {language === "en"
-                  ? "numberOfGamesPlayed: 1 for best of 1, 2 for best of 3, 3 for best of 5."
-                  : ""}
-              </li>
-            </ul>
+          <div className="flex justify-center space-x-4 mt-6">
+            <button
+              onClick={openRankScoreModal}
+              className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            >
+              {language === "en" ? "RankScore Rule" : "排名分数规则"}
+            </button>
+            <button
+              onClick={openRecordMatchModal}
+              className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              {language === "en" ? "How To Record a Game" : "如何记录比赛"}
+            </button>
           </div>
         </div>
 
@@ -117,6 +81,21 @@ const RulesPage = () => {
           </button>
         </div>
       </div>
+
+      {/* RankScore Modal */}
+      <RankScoreRuleModal
+        isOpen={isRankScoreModalOpen}
+        onClose={closeRankScoreModal}
+        language={language}
+      />
+
+      <RecordMatchRulesModal
+        isOpen={isRecordMatchModalOpen}
+        onClose={closeRecordMatchModal}
+        language={language}
+      />
+
+
     </div>
   );
 };
