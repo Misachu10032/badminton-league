@@ -139,7 +139,6 @@ export async function scoreSettlement(match, db) {
         }
       );
     }
-    console.log(scoreChanges,"sadsadasdasdasd")
     await updateMatchRecord(match, scoreChanges, db);
   } catch (error) {
     console.error("Score Settlement Error", error);

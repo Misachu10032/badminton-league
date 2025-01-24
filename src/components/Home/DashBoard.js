@@ -5,6 +5,7 @@ import { useEffect, useState, useMemo } from "react";
 import DoubleCheckModal from "../common/DoubleCheckModal";
 import { formatDate } from "@/utils/formatDate";
 import { triggerNotification } from "../../utils/eventBus";
+import MatchDetailModal from "./MatchDetailModal";
 
 const MATCHES_PER_PAGE = 10; // Matches per page
 
@@ -14,7 +15,9 @@ export default function Dashboard({ user, matches, setMatches, setUser }) {
   const [pendingPage, setPendingPage] = useState(1);
   const [confirmedPage, setConfirmedPage] = useState(1);
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+  const [isMatchDetailModalOpen, setIsMatchDetailModalOpen] = useState(false);
   const [matchToDecline, setMatchToDecline] = useState(null);
+  const [selectedMatchId, setSelectedMatchId] = useState("");
 
   useEffect(() => {
     if (!user || !user.requests) {
@@ -236,9 +239,18 @@ export default function Dashboard({ user, matches, setMatches, setUser }) {
                     key={match._id}
                     className="p-2 sm:p-4 border rounded-lg bg-gray-50 shadow flex flex-col sm:flex-row justify-between"
                   >
-                    <p className="mb-2 sm:mb-0 sm:mr-2">
-                      {formatDate(match.createdAt)}
-                    </p>
+                    <div className="flex items-center mb-2 sm:mb-0 sm:mr-2">
+                      <p className="">{formatDate(match.createdAt)}</p>
+                      <button
+                        className=" hover:bg-blue-600 text-blue font-bold py-2 px-4 transition-all duration-200 sm:ml-1 ml-auto"
+                        onClick={() => {
+                          setIsMatchDetailModalOpen(true);
+                          setSelectedMatchId(match._id); // Pass the correct `matchId` here
+                        }}
+                      >
+                        !
+                      </button>
+                    </div>
                     <p className="mb-2 sm:mb-0 sm:mr-2">
                       {match.team1.map((p) => p.name).join(", ")} vs{" "}
                       {match.team2.map((p) => p.name).join(", ")}
@@ -293,6 +305,13 @@ export default function Dashboard({ user, matches, setMatches, setUser }) {
               >
                 Next
               </button>
+
+              {isMatchDetailModalOpen && (
+                <MatchDetailModal
+                  matchId={selectedMatchId}
+                  onClose={() => setIsMatchDetailModalOpen(false)}
+                />
+              )}
             </div>
           </>
         )}
