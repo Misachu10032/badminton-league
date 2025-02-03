@@ -19,24 +19,34 @@ const EditUserModal = ({ user, onClose, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {};
+    if (updatedUser.name !== user.name) {
+      payload.name = updatedUser.name;
+    }
+    if (updatedUser.email !== user.email) {
+      payload.email = updatedUser.email;
+    }
+    if (updatedUser.score !== user.score) {
+      payload.score = updatedUser.score;
+    }
     try {
       const response = await fetch(`/api/update-user/${user._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedUser),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
         onSave(updatedUser); // Notify parent component to update the user list
         onClose(); // Close the modal
       } else {
-        const error = await response.json();
-        console.error("Error updating user:", error);
-        alert(error.message || "Failed to update user");
+        const errorData = await response.json();
+
+        alert(errorData.error || "Failed to update user");
       }
     } catch (error) {
-      console.error("Error updating user:", error);
-      alert("Failed to update user. Please try again.");
+
+      alert("Failed to update user. Please try again.aaa");
     }
   };
 
