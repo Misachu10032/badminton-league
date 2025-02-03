@@ -1,10 +1,13 @@
 import { useState } from "react";
 import DoubleCheckModal from "../common/DoubleCheckModal";
+import EditUserModal from "./EditUserModal";
 
-const UserManagementTable = ({ users, handleEditUser, setUsers }) => {
+const UserManagementTable = ({ users, setUsers }) => {
   const [isDoubleCheckModalOpen, setIsDoubleCheckModalOpen] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [isTableCollapsed, setIsTableCollapsed] = useState(true); // New state for collapsing
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State for edit modal
+  const [userToEdit, setUserToEdit] = useState(null); // State for user being edited
 
   const onDeleteButtonClicked = async (userId) => {
     setUserIdToDelete(userId);
@@ -43,6 +46,21 @@ const UserManagementTable = ({ users, handleEditUser, setUsers }) => {
     setIsTableCollapsed(!isTableCollapsed);
   };
 
+  const handleEditClick = (user) => {
+
+    setUserToEdit(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveUser = (updatedUser) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user._id === updatedUser._id ? updatedUser : user
+      )
+    );
+    setIsEditModalOpen(false);
+  };
+
   return (
     <div>
       <div className="flex flex-row justify-between mb-4">
@@ -77,13 +95,10 @@ const UserManagementTable = ({ users, handleEditUser, setUsers }) => {
               </td>
               <td className="w-full sm:w-auto flex space-x-2">
                 <button
-                  onClick={() => handleEditUser(user._id)}
-                  className={`w-24 py-2 rounded-lg shadow-md transition duration-200 ${
-                    user.editable
-                      ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "cursor-not-allowed bg-gray-400 text-gray-700"
-                  }`}
-                  disabled={!user.editable}
+                  onClick={() => handleEditClick(user)}
+                  className={
+                    "w-24 py-2 rounded-lg shadow-md transition duration-200  bg-blue-600 text-white hover:bg-blue-700"
+                  }
                 >
                   Edit
                 </button>
@@ -106,6 +121,14 @@ const UserManagementTable = ({ users, handleEditUser, setUsers }) => {
           isOpen={isDoubleCheckModalOpen}
           onClose={() => setIsDoubleCheckModalOpen(false)}
           onConfirm={handleConfirmDelete}
+        />
+      )}
+
+      {isEditModalOpen && (
+        <EditUserModal
+          user={userToEdit}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSaveUser}
         />
       )}
     </div>
