@@ -27,9 +27,9 @@ export function findWinners(match) {
     team2TotalScore += Number(score.team2);
 
     // Determine round winner
-    if (score.team1 > score.team2) {
+    if (Number(score.team1) > Number(score.team2)) {
       team1Wins++;
-    } else if (score.team2 > score.team1) {
+    } else if (Number(score.team2) > Number(score.team1)) {
       team2Wins++;
     }
     // If scores are equal, no wins are added for this round (treated as a draw)
