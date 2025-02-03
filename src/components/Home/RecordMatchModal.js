@@ -179,10 +179,10 @@ export default function RecordMatchModal({
         onClose();
       } else {
         const errorData = await response.json();
-        triggerNotification("Error submitting match: " + errorData.error);
+        triggerNotification("Error submitting match: " + errorData.error,"error");
       }
     } catch (error) {
-      triggerNotification("Error submitting match: " + errorData.error);
+      triggerNotification("Error submitting match: " + errorData.error,"error");
     }
   };
 

@@ -20,7 +20,7 @@ export default function HomePage() {
     try {
       const userId = Cookies.get("userID");
       if (!userId) {
-        triggerNotification("User not logged in");
+        triggerNotification("User not logged in","error");
         return;
       }
 
