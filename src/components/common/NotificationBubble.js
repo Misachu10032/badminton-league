@@ -1,32 +1,23 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { Snackbar, Alert } from '@mui/material';
-import { useNotification } from '../../context/NotificationContext';
+import React from "react";
+import { Snackbar, Alert } from "@mui/material";
 
-const NotificationBubble = () => {
-  const { id, message } = useNotification(); // Use id to detect changes
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (message) {
-      setOpen(true);
-
-      const timer = setTimeout(() => {
-        setOpen(false);
-      }, 2000);
-
-      return () => clearTimeout(timer); // Cleanup timer
-    }
-  }, [id, message]); // Depend on both id and message
-
+const NotificationBubble = ({ open, message, severity, onClose }) => {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={2000}
-      onClose={() => setOpen(false)}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      autoHideDuration={5000}
+      onClose={onClose}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
-      <Alert onClose={() => setOpen(false)} severity="success" sx={{ width: '100%' }}>
+      <Alert
+        onClose={onClose}
+        severity={severity}
+        sx={{
+          padding: "20px", // Add more padding for a bigger appearance
+          fontSize: "1.5rem",
+        }}
+      >
         {message}
       </Alert>
     </Snackbar>
