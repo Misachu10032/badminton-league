@@ -60,9 +60,8 @@ const RulesPage = () => {
               
               <h2 className="text-lg sm:text-xl font-bold mt-4">1. 记录比赛</h2>
               <ul className="list-disc list-inside">
-                <li>每天可选择三场比赛作为积分赛。记录比分冲排名积分。每场比赛最多包含五场对局。</li>
+                <li>每天可选择1-3场比赛作为积分赛。记录比分冲排名积分。每场比赛最多包含五场对局。</li>
                 <li>每场比赛需由所有参赛选手同意后记录积分。</li>
-                <li>记录时需填写比赛比分及对手信息。</li>
               </ul>
 
               <h2 className="text-lg sm:text-xl font-bold mt-4">2. 计分规则</h2>

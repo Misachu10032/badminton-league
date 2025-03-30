@@ -44,7 +44,7 @@ export default function RecordMatchRulesModal({ isOpen, onClose, language }) {
             <li>
               {language === "en"
                 ? "The general idea is to choose 3 games as league games each day and record the scores to count towards ranking points."
-                : "每天选择三场比赛作为积分赛。记录比分冲排名积分。"}
+                : "每天可选择1-3场比赛作为积分赛。记录比分冲排名积分。"}
             </li>
             <li>
               {language === "en"
