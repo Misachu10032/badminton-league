@@ -100,7 +100,7 @@ const RulesPage = () => {
           </button>
           <button
             onClick={openRecordMatchModal}
-            className="w-full sm:w-auto px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm sm:text-base"
+            className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm sm:text-base"
           >
             {language === "en" ? "How To Record a Game" : "如何记录比赛"}
           </button>
