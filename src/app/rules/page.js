@@ -96,7 +96,7 @@ const RulesPage = () => {
             onClick={openRankScoreModal}
             className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm sm:text-base"
           >
-            {language === "en" ? "RankScore Rule" : "排名分数细则"}
+            {language === "en" ? "RankScore Rule" : "积分细则"}
           </button>
           <button
             onClick={openRecordMatchModal}

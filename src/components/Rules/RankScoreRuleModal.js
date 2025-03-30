@@ -27,7 +27,7 @@ const RankScoreRule = ({ isOpen, onClose, language }) => {
       {/* Header */}
       <div className="flex items-center justify-between border-b pb-3 mb-4">
         <h2 className="text-2xl font-bold text-gray-800">
-          {language === "en" ? "RankScore Rule" : "排位加分积分规则"}
+          {language === "en" ? "RankScore Rule" : "积分细则"}
         </h2>
         <IconButton onClick={onClose} aria-label="Close" color="primary">
           <CloseIcon />
