@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-
 import RankScoreRuleModal from "../../components/Rules/RankScoreRuleModal";
-import Modal from "react-modal";
 import RecordMatchRulesModal from "../../components/Rules/RecordMatchRuleModal";
 
 const RulesPage = () => {
   const [language, setLanguage] = useState("zh"); // Default language is Chinese
   const [isRankScoreModalOpen, setRankScoreModalOpen] = useState(false);
   const [isRecordMatchModalOpen, setRecordMatchModalOpen] = useState(false);
+
   const toggleLanguage = () => {
     setLanguage((prevLang) => (prevLang === "en" ? "zh" : "en"));
   };
@@ -37,6 +36,8 @@ const RulesPage = () => {
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full sm:w-full lg:w-1/2 bg-white rounded-xl shadow-2xl p-8 space-y-6">
+        
+        {/* Header Section */}
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-extrabold text-indigo-600">
             {language === "en" ? "Rules" : "规则"}
@@ -49,29 +50,55 @@ const RulesPage = () => {
           </button>
         </div>
 
+        {/* Rules Content */}
         <div className="text-gray-700 space-y-5">
-          <p className="text-lg font-medium text-center">
-            {language === "en" ? "I'm working on it" : "我还在肝这个页面"}
-          </p>
-          <p className="text-lg font-medium text-center">
-            {language === "en" ? "I'm working on it" : "这是个做出来玩玩的APP,冲排名得称号。大家开心就好"}
-          </p>
-          <div className="flex justify-center space-x-4 mt-6">
-            <button
-              onClick={openRankScoreModal}
-              className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-            >
-              {language === "en" ? "RankScore Rule" : "排名分数规则"}
-            </button>
-            <button
-              onClick={openRecordMatchModal}
-              className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              {language === "en" ? "How To Record a Game" : "如何记录比赛"}
-            </button>
-          </div>
+          {language === "zh" ? (
+            <>
+              <p className="text-lg font-medium text-center">
+                本积分赛旨在促进成员之间球局的竞技性，并鼓励大家与不同的对手对战，提升技术水平。请阅读以下规则：
+              </p>
+              
+              <h2 className="text-xl font-bold mt-4">1. 记录比赛</h2>
+              <p>- 每天可选择三场比赛作为积分赛。记录比分冲排名积分。每场比赛最多包含五场对局。</p>
+              <p>- 每场比赛需由所有参赛选手同意后记录积分。</p>
+              <p>- 记录时需填写比赛比分及对手信息。</p>
+
+              <h2 className="text-xl font-bold mt-4">2. 计分规则</h2>
+              <p>- 每场获胜可获得相应积分，积分多少取决于对手实力和历史对战情况。</p>
+              <p>- 若与相同对手频繁比赛，所获积分将逐渐减少，以鼓励更多不同的对战组合。</p>
+
+              <h2 className="text-xl font-bold mt-4">3. 排名系统</h2>
+              <p>- 排名根据累计积分计算，定期更新排行榜。</p>
+              <p>- 鼓励挑战更强的对手，赢得更高积分！</p>
+
+              <h2 className="text-xl font-bold mt-4">4. 公平竞技</h2>
+              <p>- 诚信记录比赛结果，杜绝虚假比赛，恶意刷分。</p>
+              <p>- 尊重对手，保持体育精神。</p>
+
+              <p className="mt-4 font-medium text-center">让我们一起享受竞技乐趣，提高羽毛球水平！🎉🏸</p>
+            </>
+          ) : (
+            <p className="text-lg font-medium text-center">I'm working on the English version.</p>
+          )}
         </div>
 
+        {/* Buttons for Additional Rules */}
+        <div className="flex justify-center space-x-4 mt-6">
+          <button
+            onClick={openRankScoreModal}
+            className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+          >
+            {language === "en" ? "RankScore Rule" : "排名分数细则"}
+          </button>
+          <button
+            onClick={openRecordMatchModal}
+             className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" 
+          >
+            {language === "en" ? "How To Record a Game" : "如何记录比赛"}
+          </button>
+        </div>
+
+        {/* Button to Go Back to Login */}
         <div className="text-center mt-6">
           <button
             onClick={handleNavigateToLogin}
@@ -89,13 +116,12 @@ const RulesPage = () => {
         language={language}
       />
 
+      {/* Record Match Modal */}
       <RecordMatchRulesModal
         isOpen={isRecordMatchModalOpen}
         onClose={closeRecordMatchModal}
         language={language}
       />
-
-
     </div>
   );
 };

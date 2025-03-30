@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Modal, Box, Typography, Button, Avatar } from '@mui/material';
 import { getRank } from '@/utils/getRanks';
 
-
 const PlayerRankModal = ({ isOpen, onClose }) => {
   const [users, setUsers] = useState([]);
 
@@ -83,6 +82,8 @@ const PlayerRankModal = ({ isOpen, onClose }) => {
                     className="flex justify-between items-center p-4 border-b border-gray-300 rounded-lg hover:bg-gray-50 transition duration-200"
                   >
                     <div className="flex items-center space-x-4">
+                      {/* Add the index here */}
+                      <Typography className="font-bold text-gray-600">{index + 1}.</Typography>
                       <Avatar 
                         sx={{ width: 40, height: 40, fontSize: '1.5rem' }} 
                         alt={user.name} 
