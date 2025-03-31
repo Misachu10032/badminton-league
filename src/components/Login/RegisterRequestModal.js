@@ -19,14 +19,13 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
     try {
       const res = await fetch("/api/register-request", {
         method: "POST",
-        body: JSON.stringify({ email, description,name }),
+        body: JSON.stringify({ email, description, name }),
         headers: { "Content-Type": "application/json" },
       });
 
-      if (res.ok) {     
+      if (res.ok) {
         setError("");
         onClose();
-
       } else {
         const errorText = await res.text();
         setError(errorText || "Registration failed");
@@ -43,8 +42,8 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
       style={{
         content: {
           width: "80%",
-          maxWidth: "400px",
-          height: "40%",
+          maxWidth: "500px",
+          height: "50%",
           margin: "auto",
           borderRadius: "10px",
           padding: "30px",
@@ -61,6 +60,9 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
     >
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Register</h1>
+        <p className="text-sm text-gray-600 mb-4 text-center">
+          After you register, please check your email for the confirmation link.
+        </p>
         {error && (
           <div className="mb-4 text-sm text-red-500 bg-red-100 border border-red-400 rounded-md p-2 w-full text-center">
             {error}
@@ -112,7 +114,7 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
               name="description"
               type="text"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder=""
+              placeholder="This is optional"
             />
           </div>
 

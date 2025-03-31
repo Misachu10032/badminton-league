@@ -49,7 +49,7 @@ export default function RecordMatchRulesModal({ isOpen, onClose, language }) {
             <li>
               {language === "en"
                 ? "Each user can only record 3 games per day. Each game can consist of up to 5 matches."
-                : "每位玩家每天只能记录三场比赛。每场比赛最多包含五场对局。"}
+                : "每位玩家每天最多只能记录三场比赛。每场比赛最多包含五场对局。"}
             </li>
             <li>
               {language === "en"
@@ -102,7 +102,7 @@ export default function RecordMatchRulesModal({ isOpen, onClose, language }) {
             <li>
               {language === "en"
                 ? "Have Fun and Enjoy the Game!"
-                : "如果对规则不满可以找john酱，但是会不会改不一定"}
+                : "如果对规则不满可以找john酱，规则可以酌情更改。"}
             </li>
           </ul>
         </section>
