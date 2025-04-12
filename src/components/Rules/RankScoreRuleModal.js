@@ -71,7 +71,7 @@ const RankScoreRule = ({ isOpen, onClose, language }) => {
                 ? "Example: If A and B win against C and D, A's value includes all wins against C and D."
                 : "这个规则是希望可以有更多的人参与到这个积分赛里。"}
             </>
-     
+
             <li>
               {language === "en"
                 ? "numberOfGamesPlayed: 1 for best of 1, 2 for best of 3, 3 for best of 5."
@@ -114,6 +114,37 @@ const RankScoreRule = ({ isOpen, onClose, language }) => {
                 : "挑战分：队伍排名分数总和差超过1000时得20分。"}
             </li>
           </ul>
+        </div>
+      </section>
+      {/* Example Match Images */}
+      <section className="mt-6">
+        <h3 className="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+          {language === "en" ? "Example Matches" : "比赛示例"}
+        </h3>
+        <div className="flex flex-wrap gap-4 justify-center">
+          {/* Match 1 */}
+          <div className="w-1/2 max-w-sm text-center">
+            <p className="font-medium mb-2">
+              {language === "en" ? "Match 1" : "第一场比赛"}
+            </p>
+            <img
+              src="/images/rules/example_match_1.png"
+              alt="Example Match 1"
+              className="w-full h-auto rounded shadow-md"
+            />
+          </div>
+
+          {/* Match 2 */}
+          <div className="w-1/2 max-w-sm text-center">
+            <p className="font-medium mb-2">
+              {language === "en" ? "Match 2" : "第二场比赛"}
+            </p>
+            <img
+              src="/images/rules/example_match_2.png"
+              alt="Example Match 2"
+              className="w-full h-auto rounded shadow-md"
+            />
+          </div>
         </div>
       </section>
 
