@@ -1,10 +1,8 @@
-
 {
     "crons": [
       {
-        "path": "/api/cron-jobs/update-wana-play", 
+        "path": "/api/cron-jobs/update-wana-play",
         "schedule": "* * * * *"
-      }                
+      }
     ]
   }
-  
