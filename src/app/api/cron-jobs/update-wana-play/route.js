@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { updateWanaPlayField } from '../../../../scripts/setWanaPlayFieldtoFalse';
 
-export async function POST() {
+export async function GET() {
   try {
     console.log('🕒 Cron triggered at', new Date().toISOString());
 

@@ -2,8 +2,7 @@
     "crons": [
       {
         "path": "/api/cron-jobs/update-wana-play",
-        "schedule": "0 18 * * *",
-        "method": "POST"
+        "schedule": "0 18 * * *"
       }
     ]
   }
