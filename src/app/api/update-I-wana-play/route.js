@@ -25,7 +25,7 @@ export async function POST(req) {
     // Update IWanaPlay field
     await usersCollection.updateOne(
       { _id: new ObjectId(userId) },
-      { $set: { IWanaPlay: newStatus } }
+      { $set: { iWanaPlay: newStatus } }
     );
 
     return NextResponse.json({ message: 'IWanaPlay updated', IWanaPlay: newStatus });
