@@ -3,7 +3,7 @@ import DoubleCheckModal from "../../common/DoubleCheckModal";
 import AssignedMatchesModal from "./ViewAssignedMatchesModal";
 
 const UserNameRow = ({ user }) => {
-  const [iWanaPlay, setIWanaPlay] = useState(user?.IWanaPlay ?? false);
+  const [iWanaPlay, setIWanaPlay] = useState(user?.iWanaPlay ?? false);
   const [loading, setLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -11,7 +11,7 @@ const UserNameRow = ({ user }) => {
   const [matches, setMatches] = useState({ date: null, groups: [] });
 
   useEffect(() => {
-    setIWanaPlay(user?.IWanaPlay ?? false);
+    setIWanaPlay(user?.iWanaPlay ?? false);
   }, [user]);
 
   const handleToggle = () => {
@@ -33,7 +33,7 @@ const UserNameRow = ({ user }) => {
       const data = await res.json();
 
       if (res.ok) {
-        setIWanaPlay(data.IWanaPlay);
+        setIWanaPlay(data.iWanaPlay);
       } else {
         console.error(data.error);
       }

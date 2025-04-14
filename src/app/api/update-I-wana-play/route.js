@@ -20,7 +20,7 @@ export async function POST(req) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const newStatus = !user.IWanaPlay;
+    const newStatus = !user.iWanaPlay;
 
     // Update IWanaPlay field
     await usersCollection.updateOne(
@@ -28,7 +28,7 @@ export async function POST(req) {
       { $set: { iWanaPlay: newStatus } }
     );
 
-    return NextResponse.json({ message: 'IWanaPlay updated', IWanaPlay: newStatus });
+    return NextResponse.json({ message: 'IWanaPlay updated', iWanaPlay: newStatus });
   } catch (error) {
     console.error('Error toggling IWanaPlay:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
