@@ -1,0 +1,8 @@
+{
+    "crons": [
+      {
+        "path": "/api/cron-jobs/create-match-group",
+        "schedule": "0 15 * * *"
+      }
+    ]
+  }
