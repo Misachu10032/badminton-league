@@ -9,6 +9,9 @@ import RecordMatchModal from "@/components/Home/RecordMatchModal";
 import Dashboard from "@/components/Home/DashBoard";
 import { fetchAndSortMatches } from "../../utils/helpers/fetchmatches";
 import { triggerNotification } from "../../utils/eventBus";
+import UserNameRow from "../../components/Home/IWanaPlayBar";
+
+
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
@@ -20,7 +23,7 @@ export default function HomePage() {
     try {
       const userId = Cookies.get("userID");
       if (!userId) {
-        triggerNotification("User not logged in","error");
+        triggerNotification("User not logged in", "error");
         return;
       }
 
@@ -87,7 +90,7 @@ export default function HomePage() {
       </nav>
 
       {/* Pass the user data to the Dashboard component */}
-      <h1 className="text-2xl font-bold text-gray-800">{user?.name}</h1>
+      <UserNameRow user={user} />
       <UserRank score={user?.score} />
       <div className="mt-10 ml-4 flex items-center space-x-2">
         <button

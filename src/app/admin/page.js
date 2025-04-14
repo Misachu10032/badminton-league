@@ -5,8 +5,6 @@ import Cookies from "js-cookie";
 import RegistrationTable from "@/components/Admin/RegistrationTable";
 import UserManagementTable from "@/components/Admin/UserManagementTable";
 
-
-
 function Requests() {
   const [requests, setRequests] = useState([]);
   const [users, setUsers] = useState([]);
@@ -63,6 +61,33 @@ function Requests() {
     }
   };
 
+  const handlecron = async () => {
+    // Fetch user data
+    const res = await fetch(`/api/cron-jobs/set-I-wana-play-to-false`, {
+      method: "GET",
+    });
+  };
+
+  const handleMatchMaking = async () => {
+    // Fetch user data
+    const res = await fetch(`/api/cron-jobs/create-match-groups`, {
+      method: "GET",
+    });
+  };
+  const viewMatchmaking = async () => {
+    const userId = Cookies.get("userID");
+    const res = await fetch(`/api/get-match-groups?userId=${userId}`, {
+      method: "GET",
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log(data);
+    } else {
+      console.error("Failed to fetch match groups");
+    }
+  };
+
   const handleEditUser = async (id) => {
     console.log("Edit user with id:", id);
   };
@@ -91,11 +116,29 @@ function Requests() {
             >
               Logout
             </button>
+
+            <button
+              onClick={handlecron}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+            >
+              update Wana Play
+            </button>
+            <button
+              onClick={handleMatchMaking}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+            >
+              match making
+            </button>
+            <button
+              onClick={viewMatchmaking}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+            >
+              view match making
+            </button>
           </div>
         </div>
       </nav>
       <div className="bg-white shadow-md rounded-lg p-6">
-
         <RegistrationTable
           requests={requests}
           handleConfirm={handleConfirm}
@@ -103,7 +146,6 @@ function Requests() {
         />
       </div>
       <div className="bg-white shadow-md rounded-lg p-6 mt-8">
-
         <UserManagementTable
           users={users}
           handleEditUser={handleEditUser}
