@@ -3,10 +3,17 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import RegistrationTable from "@/components/Admin/RegistrationTable";
 import UserManagementTable from "@/components/Admin/UserManagementTable";
+import AssignedMatchesModal from "../../components/Home/IWanaPlayBar/ViewAssignedMatchesModal";
+import IWanaPlayUserModal from "../../components/Admin/IWanaPlayUserModal";
 
 function AdminPage() {
   const [requests, setRequests] = useState([]);
   const [users, setUsers] = useState([]);
+  const [showPlayersModal, setShowPlayersModal] = useState(false);
+  const [activePlayers, setActivePlayers] = useState({
+    date: null,
+    groups: [],
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -73,17 +80,15 @@ function AdminPage() {
       method: "GET",
     });
   };
-  const viewMatchmaking = async () => {
-    const userId = Cookies.get("userID");
-    const res = await fetch(`/api/get-match-groups?userId=${userId}`, {
-      method: "GET",
-    });
-
-    if (res.ok) {
+  const handleViewActivePlayers = async () => {
+    try {
+      const res = await fetch(`/api/view-people-signed-up`);
       const data = await res.json();
-      console.log(data);
-    } else {
-      console.error("Failed to fetch match groups");
+
+      setActivePlayers(data.players ?? []);
+      setShowPlayersModal(true);
+    } catch (error) {
+      console.error("Error fetching active players:", error);
     }
   };
 
@@ -131,7 +136,7 @@ function AdminPage() {
             match making
           </button>
           <button
-            onClick={viewMatchmaking}
+            onClick={handleViewActivePlayers}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
           >
             view match making
@@ -152,6 +157,12 @@ function AdminPage() {
           setUsers={setUsers}
         />
       </div>
+
+      <IWanaPlayUserModal
+        isOpen={showPlayersModal}
+        onClose={() => setShowPlayersModal(false)}
+        players={activePlayers}
+      />
     </div>
   );
 }
