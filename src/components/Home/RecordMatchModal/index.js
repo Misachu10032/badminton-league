@@ -6,11 +6,11 @@ import {
   Button,
   FormHelperText,
 } from "@mui/material";
-import PlayerSelectionTable from "./PlayerSelectionTable";
-import ScoreInput from "../common/SocreInput"; // Ensure the path is correct
+import PlayerSelectionTable from "./../RecordMatchModal/PlayerSelectionTable";
+import ScoreInput from "../../common/SocreInput"; // Ensure the path is correct
 import { canRecordNewMatch } from "@/utils/maxMatchesInADay";
 import { validateForm } from "@/utils/validateMatch";
-import { triggerNotification } from "../../utils/eventBus";
+import { triggerNotification } from "../../../utils/eventBus";
 
 export default function RecordMatchModal({
   isOpen,

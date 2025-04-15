@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useMemo } from "react";
 
-import DoubleCheckModal from "../common/DoubleCheckModal";
+import DoubleCheckModal from "../../common/DoubleCheckModal";
 import { formatDate } from "@/utils/formatDate";
-import { triggerNotification } from "../../utils/eventBus";
+import { triggerNotification } from "../../../utils/eventBus";
 import MatchDetailModal from "./MatchDetailModal";
 
 const MATCHES_PER_PAGE = 10; // Matches per page

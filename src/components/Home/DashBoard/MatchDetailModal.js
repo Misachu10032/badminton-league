@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "../../../utils/formatDate";
 
 const MatchDetailModal = ({ matchId, onClose }) => {
   const [matchDetails, setMatchDetails] = useState(null);

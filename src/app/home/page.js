@@ -5,11 +5,12 @@ import Cookies from "js-cookie";
 import IconButton from "@mui/material/IconButton"; // Import IconButton from Material-UI
 import RefreshIcon from "@mui/icons-material/Refresh"; // Import Refresh Icon from Material-UI
 import UserRank from "@/components/Home/UserRank";
-import RecordMatchModal from "@/components/Home/RecordMatchModal";
+
 import Dashboard from "@/components/Home/DashBoard";
 import { fetchAndSortMatches } from "../../utils/helpers/fetchmatches";
 import { triggerNotification } from "../../utils/eventBus";
 import UserNameRow from "../../components/Home/IWanaPlayBar";
+import RecordMatchModal from "../../components/Home/RecordMatchModal";
 
 
 
