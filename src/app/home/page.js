@@ -71,14 +71,7 @@ export default function HomePage() {
             >
               Rules
             </button>
-            {user?.role === "Admin" && (
-              <button
-                onClick={() => (window.location.href = "/admin")}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
-              >
-                Admin Panel
-              </button>
-            )}
+
             <button
               onClick={handleLogout}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
@@ -87,6 +80,14 @@ export default function HomePage() {
             </button>
           </div>
         </div>
+        {user?.role === "Admin" && (
+              <button
+                onClick={() => (window.location.href = "/admin")}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+              >
+                Admin Panel
+              </button>
+            )}
       </nav>
 
       {/* Pass the user data to the Dashboard component */}
