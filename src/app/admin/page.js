@@ -1,11 +1,10 @@
-// Requests.js
 "use client";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import RegistrationTable from "@/components/Admin/RegistrationTable";
 import UserManagementTable from "@/components/Admin/UserManagementTable";
 
-function Requests() {
+function AdminPage() {
   const [requests, setRequests] = useState([]);
   const [users, setUsers] = useState([]);
 
@@ -116,26 +115,27 @@ function Requests() {
             >
               Logout
             </button>
-
-            <button
-              onClick={handlecron}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
-            >
-              update Wana Play
-            </button>
-            <button
-              onClick={handleMatchMaking}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
-            >
-              match making
-            </button>
-            <button
-              onClick={viewMatchmaking}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
-            >
-              view match making
-            </button>
           </div>
+        </div>
+        <div className="flex space-x-4">
+          <button
+            onClick={handlecron}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+          >
+            update Wana Play
+          </button>
+          <button
+            onClick={handleMatchMaking}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+          >
+            match making
+          </button>
+          <button
+            onClick={viewMatchmaking}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
+          >
+            view match making
+          </button>
         </div>
       </nav>
       <div className="bg-white shadow-md rounded-lg p-6">
@@ -156,4 +156,4 @@ function Requests() {
   );
 }
 
-export default Requests;
+export default AdminPage;

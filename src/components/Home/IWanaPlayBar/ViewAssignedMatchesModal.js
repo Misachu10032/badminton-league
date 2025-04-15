@@ -46,7 +46,7 @@ const AssignedMatchesModal = ({ isOpen, onClose, groups, date }) => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-700">No matches found for you in the latest session.</p>
+          <p className="text-gray-700">No matches found for today's session.</p>
         )}
 
         {/* Close Button */}

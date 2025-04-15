@@ -1,10 +1,8 @@
 import { useState, useMemo } from "react";
-import { Box, Avatar, TextField, useMediaQuery, useTheme } from "@mui/material";
 
 export default function PlayerSelectionTable({ users, onClose, onSelect }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const filteredUsers = useMemo(
     () =>
       users
@@ -15,91 +13,56 @@ export default function PlayerSelectionTable({ users, onClose, onSelect }) {
     [users, searchQuery]
   );
 
-  const gridTemplate = isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)";
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-8">
-      <div
-        className={`bg-white ${
-          isMobile ? "p-4" : "p-10"
-        } w-full max-w-[1000px] max-h-[85vh] overflow-y-auto rounded-xl shadow-xl`}
-      >
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-4 py-6">
+      <div className="bg-white w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-xl shadow-xl p-4 sm:p-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 pb-4 border-b-2 border-gray-100">
-          <h3
-            className={`${
-              isMobile ? "text-lg" : "text-2xl"
-            } font-bold text-gray-800`}
-          >
+        <div className="flex justify-between items-center mb-4 border-b pb-4">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
             Select Player
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl font-light"
+            className="text-gray-500 hover:text-gray-700 text-2xl"
           >
             ×
           </button>
         </div>
 
-        {/* Search Box */}
+        {/* Search Input */}
         <div className="mb-4">
-          <TextField
-            fullWidth
-            variant="outlined"
-            size={isMobile ? "small" : "large"}
+          <input
+            type="text"
             placeholder="Search players..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                height: isMobile ? "40px" : "56px",
-                fontSize: isMobile ? "0.9rem" : "1.1rem",
-              },
-            }}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
           />
         </div>
 
         {/* Player Grid */}
-        <div className="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
-          <Box
-            display="grid"
-            gridTemplateColumns={gridTemplate}
-            gap={isMobile ? 2 : 4}
-          >
+        <div className="border border-gray-200 rounded-xl p-4 bg-gray-50">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {filteredUsers.map((user) => (
               <div
                 key={user._id}
                 onClick={() => onSelect(user)}
-                className={`p-4 cursor-pointer transition-all duration-200 border-2 border-gray-200 rounded-xl bg-white hover:bg-blue-50 hover:border-blue-300 hover:shadow-md ${
-                  isMobile ? "text-center" : ""
-                }`}
+                className="cursor-pointer p-4 border border-gray-200 rounded-xl bg-white hover:bg-blue-50 hover:border-blue-300 hover:shadow transition"
               >
                 <div className="flex flex-col items-center space-y-2">
-                  <Avatar
-                    sx={{
-                      width: isMobile ? 40 : 64,
-                      height: isMobile ? 40 : 64,
-                      fontSize: isMobile ? "1.25rem" : "1.75rem",
-                      bgcolor: "#EBF5FF",
-                      color: "#2563EB",
-                    }}
-                  >
+                  <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg sm:text-2xl">
                     {user.name.charAt(0).toUpperCase()}
-                  </Avatar>
-                  <span
-                    className={`text-sm font-medium text-gray-700 truncate ${
-                      isMobile ? "w-full" : "w-24"
-                    }`}
-                  >
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 truncate w-full text-center">
                     {user.name}
                   </span>
                 </div>
               </div>
             ))}
-          </Box>
+          </div>
         </div>
 
-        {/* No Results Message */}
+        {/* No Results */}
         {filteredUsers.length === 0 && (
           <div className="mt-4 text-center py-4 text-gray-500 text-sm bg-gray-50 rounded-xl">
             No players found
