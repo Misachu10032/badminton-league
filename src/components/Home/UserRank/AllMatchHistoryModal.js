@@ -80,7 +80,7 @@ export default function AllMatchHistoryModal({ isOpen, onClose }) {
       matches.flatMap((match) => [
         ...match.team1.map((p) => p.name),
         ...match.team2.map((p) => p.name),
-      ])
+      ]).sort() 
     ),
   ];
 
