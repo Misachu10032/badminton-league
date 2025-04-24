@@ -1,8 +1,8 @@
 {
     "crons": [
       {
-        "path": "/api/cron-jobs/create-match-group",
-        "schedule": "0 15 * * *"
+        "path": "/api/cron-jobs/create-match-groups",
+        "schedule": "0 14 * * *"
       }
     ]
   }
