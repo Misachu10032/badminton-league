@@ -30,7 +30,7 @@ export default function AllMatchHistoryModal({ isOpen, onClose }) {
 
   useEffect(() => {
     let filtered = matches;
-    
+
     // Filter by month
     if (selectedMonth) {
       filtered = filtered.filter((match) => {
@@ -68,7 +68,9 @@ export default function AllMatchHistoryModal({ isOpen, onClose }) {
       matches
         .map((match) => {
           const date = new Date(match.createdAt);
-          return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+          return `${date.getUTCFullYear()}-${String(
+            date.getUTCMonth() + 1
+          ).padStart(2, "0")}`;
         })
         .sort() // Sorts the months in chronological order
     ),
@@ -77,10 +79,12 @@ export default function AllMatchHistoryModal({ isOpen, onClose }) {
   // Get the list of all players (unique names)
   const allPlayers = [
     ...new Set(
-      matches.flatMap((match) => [
-        ...match.team1.map((p) => p.name),
-        ...match.team2.map((p) => p.name),
-      ]).sort() 
+      matches
+        .flatMap((match) => [
+          ...match.team1.map((p) => p.name),
+          ...match.team2.map((p) => p.name),
+        ])
+        .sort()
     ),
   ];
 
@@ -88,7 +92,7 @@ export default function AllMatchHistoryModal({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white w-full max-w-[90%] sm:max-w-[30%] max-h-[90vh] rounded-lg shadow-lg p-4 overflow-y-auto relative text-left">
+      <div className="bg-white w-full max-w-[95%] md:max-w-sm max-h-[90vh] rounded-lg shadow-lg p-4 overflow-y-auto relative text-left">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -97,7 +101,9 @@ export default function AllMatchHistoryModal({ isOpen, onClose }) {
           ✕
         </button>
 
-        <h2 className="text-lg font-semibold mb-2 text-black">All Match History</h2>
+        <h2 className="text-lg font-semibold mb-2 text-black">
+          All Match History
+        </h2>
 
         <div className="flex justify-end gap-4 mb-3">
           {/* Month Filter Dropdown */}
