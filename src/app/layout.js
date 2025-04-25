@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Badminton League",
   description: "A simple badminton league management app",
+  icons: {
+    icon: "/BadmintonLeagueIcon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
