@@ -48,7 +48,7 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
             Register
           </h1>
-          <p className="text-base sm:text-lg text-gray-700 font-semibold mb-4 text-center">
+          <p className="text-base sm:text-lg text-gray-700 mb-4 text-center">
             After registering, check your email for a confirmation link. It will
             be sent once the admin approves your request.
           </p>
