@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { triggerNotification } from "../../utils/eventBus";
 
 export default function RegisterRequestModal({ isOpen, onClose }) {
   const [error, setError] = useState("");
@@ -21,6 +22,7 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
 
       if (res.ok) {
         setError("");
+        triggerNotification("Please wait for the Admin to approve", "success");
         onClose();
       } else {
         const errorText = await res.text();
@@ -43,9 +45,12 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
         onClick={(e) => e.stopPropagation()} // ⬅️ Prevent clicks inside from closing
       >
         <div className="flex flex-col items-center">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">Register</h1>
-          <p className="text-sm text-gray-600 mb-2 text-center">
-            After you register, please check your email for the confirmation link.
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
+            Register
+          </h1>
+          <p className="text-base sm:text-lg text-gray-700 font-semibold mb-4 text-center">
+            After registering, check your email for a confirmation link. It will
+            be sent once the admin approves your request.
           </p>
 
           {error && (
@@ -56,7 +61,10 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
 
           <form className="w-full space-y-3" onSubmit={handleRegisterRequest}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email
               </label>
               <input
@@ -70,7 +78,10 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Name
               </label>
               <input
@@ -84,7 +95,10 @@ export default function RegisterRequestModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Who Referred You / How Did You Find Us?
               </label>
               <input
