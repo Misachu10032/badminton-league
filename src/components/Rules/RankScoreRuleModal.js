@@ -106,7 +106,7 @@ const RankScoreRule = ({ isOpen, onClose, language }) => {
           </h3>
           <div className="flex flex-wrap gap-4 justify-center">
             {/* Match 1 */}
-            <div className="w-1/2 max-w-sm text-center">
+            <div className="w-[90%] max-w-sm text-center">
               <p className="font-medium mb-2">
                 {language === "en" ? "Match 1" : "第一场比赛"}
               </p>
@@ -118,7 +118,7 @@ const RankScoreRule = ({ isOpen, onClose, language }) => {
             </div>
 
             {/* Match 2 */}
-            <div className="w-1/2 max-w-sm text-center">
+            <div className="w-[90%] max-w-sm text-center">
               <p className="font-medium mb-2">
                 {language === "en" ? "Match 2" : "第二场比赛"}
               </p>
