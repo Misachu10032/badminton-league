@@ -1,14 +1,13 @@
 # Badminton League Management System
 
 ## Description
-The **Badminton League Management System** is a web application designed to manage a badminton league. It allows admins to handle user registrations, match scheduling, score tracking, and user management. Players can register, view their matches, and confirm their participation. The system also includes features for match-making, score settlement, and user ranking.
+This is a hobby project I made for the local badminton club. Badminton is like the only hobby I have; I have got to give back to the community. The goal is to allow members to track their games and facilitate more competivitive games among different members.
 
 ## Features
-- **User Registration**: Players can request to join the league, and admins can approve or decline requests.
-- **Match Management**: Admins can create, confirm, and decline matches. Players can confirm their participation in matches.
+- **User Registration**: Players can request to join the league, and admins can approve or decline requests. Automatically sends email for verification.
+- **Match Management**:  Players can create, confirm, and decline matches. Players can confirm their participation in matches.
 - **Score Settlement**: Automatically calculates and updates player scores based on match results.
-- **Match-Making**: Automatically generates match groups based on player availability.
-- **User Management**: Admins can view, edit, and delete users.
+- **Match-Making**: Automatically generates match groups based on player availability. Used vercel cron job for automatic generation.
 - **Responsive UI**: The interface is optimized for both desktop and mobile devices.
 
 ## Technologies Used
@@ -17,13 +16,10 @@ The **Badminton League Management System** is a web application designed to mana
 - **Database**: MongoDB
 - **Authentication**: JWT (JSON Web Tokens)
 - **Email Notifications**: Nodemailer
-- **Deployment**: Vercel (or any other platform)
+- **Deployment**: Vercel
 
 ## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/badminton-league.git
-   ```
+1. Clone the repo
 2. Navigate to the project directory:
    ```bash
    cd badminton-league
@@ -45,26 +41,6 @@ The **Badminton League Management System** is a web application designed to mana
    ```bash
    npm run dev
    ```
-
-## Usage
-### Admin Features
-- **User Management**: Admins can view, edit, and delete users from the `UserManagementTable`.
-- **Match Management**: Admins can create, confirm, and decline matches.
-- **Match-Making**: Admins can generate match groups based on player availability.
-- **Score Settlement**: Admins can settle scores after matches are completed.
-
-### Player Features
-- **Registration**: Players can request to join the league by submitting their email and name.
-- **Match Confirmation**: Players can confirm their participation in assigned matches.
-- **Score Tracking**: Players can view their scores and rankings.
-
-## Contributing
-Contributions are welcome! Please follow these steps:
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeatureName`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/YourFeatureName`).
-5. Open a pull request.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
