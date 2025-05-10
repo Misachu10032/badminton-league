@@ -3,12 +3,13 @@
 import { useState } from "react";
 import RankScoreRuleModal from "../../components/Rules/RankScoreRuleModal";
 import RecordMatchRulesModal from "../../components/Rules/RecordMatchRuleModal";
+import CatMatchingSystemModal from "../../components/Rules/CatMatchingSystemModal";
 
 const RulesPage = () => {
   const [language, setLanguage] = useState("zh"); // Default language is Chinese
   const [isRankScoreModalOpen, setRankScoreModalOpen] = useState(false);
   const [isRecordMatchModalOpen, setRecordMatchModalOpen] = useState(false);
-
+  const [isCatMatchingSystemModalOpen, setCatMatchingSystemModalOpen] = useState(false);
   const toggleLanguage = () => {
     setLanguage((prevLang) => (prevLang === "en" ? "zh" : "en"));
   };
@@ -33,10 +34,21 @@ const RulesPage = () => {
     setRecordMatchModalOpen(false);
   };
 
+  
+  const openCatMatchingSystemModal = () => {
+    setCatMatchingSystemModalOpen(true);
+  };
+
+  const closeCatMatchingSystemModal = () => {
+    setCatMatchingSystemModalOpen(false);
+  };
+
+
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-4xl bg-white rounded-xl shadow-2xl p-6 sm:p-8 space-y-6">
-        
         {/* Header Section */}
         <div className="flex justify-between items-center">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-indigo-600">
@@ -57,17 +69,23 @@ const RulesPage = () => {
               <p className="text-center font-medium">
                 本积分赛旨在促进成员之间球局的竞技性，并鼓励大家与不同的对手对战，提升技术水平。请阅读以下规则：
               </p>
-              
+
               <h2 className="text-lg sm:text-xl font-bold mt-4">1. 记录比赛</h2>
               <ul className="list-disc list-inside">
-                <li>每天可选择1-3场比赛作为积分赛。记录比分冲排名积分。每场比赛最多包含五场对局。</li>
+                <li>
+                  每天可选择1-3场比赛作为积分赛。记录比分冲排名积分。每场比赛最多包含五场对局。
+                </li>
                 <li>每场比赛需由所有参赛选手同意后记录积分。</li>
               </ul>
 
               <h2 className="text-lg sm:text-xl font-bold mt-4">2. 计分规则</h2>
               <ul className="list-disc list-inside">
-                <li>每场获胜可获得相应积分，积分多少取决于对手实力和历史对战情况。</li>
-                <li>若与相同对手频繁比赛，所获积分将逐渐减少，以鼓励更多不同的对战组合。</li>
+                <li>
+                  每场获胜可获得相应积分，积分多少取决于对手实力和历史对战情况。
+                </li>
+                <li>
+                  若与相同对手频繁比赛，所获积分将逐渐减少，以鼓励更多不同的对战组合。
+                </li>
               </ul>
 
               <h2 className="text-lg sm:text-xl font-bold mt-4">3. 排名系统</h2>
@@ -82,10 +100,14 @@ const RulesPage = () => {
                 <li>尊重对手，保持体育精神。</li>
               </ul>
 
-              <p className="mt-4 text-center font-medium">让我们一起享受竞技乐趣，提高羽毛球水平！🎉🏸</p>
+              <p className="mt-4 text-center font-medium">
+                让我们一起享受竞技乐趣，提高羽毛球水平！🎉🏸
+              </p>
             </>
           ) : (
-            <p className="text-center font-medium">I'm working on the English version.</p>
+            <p className="text-center font-medium">
+              I'm working on the English version.
+            </p>
           )}
         </div>
 
@@ -102,6 +124,12 @@ const RulesPage = () => {
             className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm sm:text-base"
           >
             {language === "en" ? "How To Record a Game" : "如何记录比赛"}
+          </button>
+          <button
+            onClick={openCatMatchingSystemModal}
+            className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm sm:text-base"
+          >
+            {language === "en" ? "Cat Matching System" : "猫猫约架系统"}
           </button>
         </div>
 
@@ -127,6 +155,12 @@ const RulesPage = () => {
       <RecordMatchRulesModal
         isOpen={isRecordMatchModalOpen}
         onClose={closeRecordMatchModal}
+        language={language}
+      />
+
+      <CatMatchingSystemModal
+        isOpen={isCatMatchingSystemModalOpen}
+        onClose={closeCatMatchingSystemModal}
         language={language}
       />
     </div>
