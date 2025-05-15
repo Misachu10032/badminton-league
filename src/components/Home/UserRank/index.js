@@ -21,12 +21,15 @@ const UserRank = ({ score, players }) => {
       {/* Icons container */}
       <div className="flex flex-col items-center space-y-2 ml-4">
         <BarChartIcon
-          className="cursor-pointer text-blue-600 hover:text-blue-800"
+          className="cursor-pointer text-blue-600 hover:text-blue-800 hover:scale-105 active:scale-95 transition-transform"
           onClick={() => setIsRankModalOpen(true)}
+          title="View Rankings"
         />
+
         <HistoryIcon
-          className="cursor-pointer text-green-600 hover:text-green-800"
+          className="cursor-pointer text-green-600 hover:text-green-800 hover:scale-105 active:scale-95 transition-transform"
           onClick={() => setIsHistoryModalOpen(true)}
+          title="View Match History"
         />
       </div>
 

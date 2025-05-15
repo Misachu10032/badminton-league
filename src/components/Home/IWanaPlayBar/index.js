@@ -71,6 +71,7 @@ const UserNameRow = ({ user }) => {
             onClick={handleToggle}
             disabled={loading}
             aria-label="Toggle IWanaPlay"
+            className="hover:scale-105 active:scale-95 transition-transform"
           >
             <img
               src={
@@ -79,7 +80,7 @@ const UserNameRow = ({ user }) => {
                   : "/images/home/UserNameRow/IDonWanaPlay.png"
               }
               alt={iWanaPlay ? "Switch On" : "Switch Off"}
-              className="w-14 h-16"
+              className="w-18 h-20 cursor-pointer"
             />
           </button>
 
@@ -88,11 +89,12 @@ const UserNameRow = ({ user }) => {
               onClick={handleViewMatches}
               disabled={loading}
               aria-label="View Matches"
+              className="hover:scale-105 active:scale-95 transition-transform"
             >
               <img
                 src="/images/home/UserNameRow/ViewMatches.png"
                 alt="View Matches"
-                className="w-14 h-16"
+                className="w-18 h-20 cursor-pointer"
               />
             </button>
           )}
