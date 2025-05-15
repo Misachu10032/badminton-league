@@ -5,6 +5,7 @@ import RegistrationTable from "@/components/Admin/RegistrationTable";
 import UserManagementTable from "@/components/Admin/UserManagementTable";
 import AssignedMatchesModal from "../../components/Home/IWanaPlayBar/ViewAssignedMatchesModal";
 import IWanaPlayUserModal from "../../components/Admin/IWanaPlayUserModal";
+import DoubleCheckModal from "../../components/common/DoubleCheckModal";
 
 function AdminPage() {
   const [requests, setRequests] = useState([]);
@@ -14,6 +15,7 @@ function AdminPage() {
     date: null,
     groups: [],
   });
+  const [confirmAction, setConfirmAction] = useState(null); // 'cron' | 'matchMaking' | null
 
   useEffect(() => {
     async function fetchData() {
@@ -124,22 +126,24 @@ function AdminPage() {
         </div>
         <div className="flex space-x-4">
           <button
-            onClick={handlecron}
+            onClick={() => setConfirmAction("cron")}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
           >
-            update Wana Play
+            cats to sleep
           </button>
+
           <button
-            onClick={handleMatchMaking}
+            onClick={() => setConfirmAction("matchMaking")}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
           >
-            match making
+            regenerate match list
           </button>
+
           <button
             onClick={handleViewActivePlayers}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition duration-200"
           >
-            view match making
+            view sign up
           </button>
         </div>
       </nav>
@@ -162,6 +166,24 @@ function AdminPage() {
         isOpen={showPlayersModal}
         onClose={() => setShowPlayersModal(false)}
         players={activePlayers}
+      />
+      <DoubleCheckModal
+        isOpen={!!confirmAction}
+        title="Are you sure?"
+        message={
+          confirmAction === "cron"
+            ? "让所有猫猫躺平.Proceed?"
+            : "重新生成对战列表. Proceed?"
+        }
+        onClose={() => setConfirmAction(null)}
+        onConfirm={() => {
+          if (confirmAction === "cron") {
+            handlecron();
+          } else if (confirmAction === "matchMaking") {
+            handleMatchMaking();
+          }
+          setConfirmAction(null);
+        }}
       />
     </div>
   );
